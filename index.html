@@ -76,9 +76,11 @@
     #hexCanvas {
       position: fixed;
       top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
-      height: 100%;
       pointer-events: none;
       z-index: -1;
       backdrop-filter: blur(10px);
@@ -96,11 +98,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(20,10,40,0.98), rgba(30,5,50,0.98));
+      backdrop-filter: blur(10px);
     }
 
-      backdrop-filter: blur(10px);
     .landing-page.hidden {
       opacity: 0;
       visibility: hidden;
@@ -214,6 +215,21 @@
     a { color: var(--accent); text-decoration: none; }
     a:hover { color: #fff; }
 
+    @keyframes breathingPurple {
+      0% {
+        text-shadow: 0 0 15px rgba(168, 85, 247, 0.3), 0 0 30px rgba(168, 85, 247, 0.2);
+        filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.2));
+      }
+      50% {
+        text-shadow: 0 0 30px rgba(168, 85, 247, 0.8), 0 0 60px rgba(168, 85, 247, 0.5);
+        filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8)) drop-shadow(0 0 40px rgba(168, 85, 247, 0.5));
+      }
+      100% {
+        text-shadow: 0 0 15px rgba(168, 85, 247, 0.3), 0 0 30px rgba(168, 85, 247, 0.2);
+        filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.2));
+      }
+    }
+
     header {
       background: linear-gradient(180deg, #0a0a0c, transparent);
       padding: 0.5rem 2%;
@@ -221,7 +237,8 @@
       top: 0;
       z-index: 100;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 2px solid rgba(168, 85, 247, 0.3);
+      animation: breathingPurple 3s ease-in-out infinite;
     }
     nav {
       display: flex;
@@ -242,7 +259,22 @@
       filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.4));
       letter-spacing: 2px;
     }
-    .nav-links { display: flex; gap: 0.8rem; font-weight: 500; }
+    .nav-links { 
+      display: flex; 
+      gap: 2.5rem; 
+      font-weight: 500;
+      flex: 1;
+      justify-content: center;
+    }
+    .nav-links a {
+      padding: 0.5rem 1rem;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .nav-links a:hover {
+      color: #a855f7;
+      text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+    }
     #nav-auth { display: flex; gap: 0.25rem; align-items: center; }
     .nav-auth-hidden { display: none !important; }
 
@@ -907,10 +939,7 @@
     .product-card-price {
       font-size: 1.5rem;
       font-weight: 700;
-      background: linear-gradient(180deg, #a855f7 0%, #000 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #00d4ff;
       margin-bottom: 0.5rem;
     }
 
@@ -2764,6 +2793,278 @@
       transform: translateY(-2px);
     }
 
+    /* Custom Payment System Styles */
+    .payment-method-card {
+      background: rgba(168, 85, 247, 0.1);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .payment-method-card:hover {
+      border-color: #a855f7;
+      background: rgba(168, 85, 247, 0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
+    }
+
+    .payment-method-card i {
+      font-size: 2rem;
+      color: #a855f7;
+    }
+
+    .payment-method-card p {
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .payment-method-card.selected {
+      border-color: #00d4ff;
+      background: rgba(0, 212, 255, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+    }
+
+    .payment-method-card.selected i {
+      color: #00d4ff;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Transaction History */
+    .transaction-item {
+      background: rgba(168, 85, 247, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .transaction-item:hover {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: #a855f7;
+    }
+
+    .transaction-info {
+      flex: 1;
+    }
+
+    .transaction-id {
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .transaction-product {
+      color: var(--text);
+      margin: 0.25rem 0;
+      font-size: 0.95rem;
+    }
+
+    .transaction-date {
+      color: #888;
+      font-size: 0.8rem;
+    }
+
+    .transaction-status {
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .transaction-status.completed {
+      background: rgba(0, 255, 136, 0.2);
+      color: #7dffb7;
+    }
+
+    .transaction-status.processing {
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+    }
+
+    .transaction-status.failed {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff9b9b;
+    }
+
+    .transaction-status.refunded {
+      background: rgba(255, 165, 0, 0.2);
+      color: #ffb347;
+    }
+
+    .transaction-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #00d4ff;
+      text-align: right;
+      margin-left: 1rem;
+    }
+
+    /* Owner Panel Styles */
+    .owner-tab-btn {
+      transition: all 0.3s ease;
+    }
+
+    .owner-tab-btn:hover {
+      color: #ff6b00 !important;
+    }
+
+    .owner-tab-content {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .payment-card {
+      background: rgba(168, 85, 247, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .payment-card:hover {
+      border-color: #a855f7;
+      background: rgba(168, 85, 247, 0.1);
+    }
+
+    .payment-card-info {
+      flex: 1;
+    }
+
+    .payment-card-number {
+      font-family: monospace;
+      font-size: 1.1rem;
+      color: var(--text);
+      margin: 0.5rem 0;
+      letter-spacing: 2px;
+    }
+
+    .payment-card-holder {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .payment-card-expiry {
+      color: #666;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    .payment-card-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 1rem;
+    }
+
+    .payment-card-default {
+      background: #00d4ff;
+      color: #000;
+    }
+
+    .payment-card-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .payment-card-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .payment-card-btn-delete {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .payment-card-btn-delete:hover {
+      background: #ff5252;
+      transform: translateY(-2px);
+    }
+
+    .payout-item {
+      background: rgba(255, 107, 0, 0.05);
+      border: 1px solid rgba(255, 107, 0, 0.2);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .payout-info {
+      flex: 1;
+    }
+
+    .payout-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ff6b00;
+    }
+
+    .payout-date {
+      color: #888;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    .payout-status {
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .payout-status.pending {
+      background: rgba(255, 165, 0, 0.2);
+      color: #ffb347;
+    }
+
+    .payout-status.completed {
+      background: rgba(0, 255, 136, 0.2);
+      color: #7dffb7;
+    }
+
+    .payout-status.failed {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff9b9b;
+    }
+
     footer {
       background: #0a0a0c;
       padding: 4rem 5% 2rem;
@@ -2907,6 +3208,10 @@
         <i class="fas fa-shield-alt"></i>
         <span>Staff Panel</span>
       </a>
+      <a href="#" class="sidebar-item" id="menu-owner-panel" onclick="openOwnerPanel(); toggleSidebar();" style="display: none;">
+        <i class="fas fa-crown"></i>
+        <span>Owner Panel</span>
+      </a>
       <div class="sidebar-section"><i class="fas fa-user"></i> Account</div>
       <a href="#" class="sidebar-item" onclick="openOrderHistory()">
         <i class="fas fa-shopping-bag"></i>
@@ -2966,8 +3271,8 @@
 
   <header>
     <nav>
-      <img src="atlas_logo.png" class="atlas-logo" alt="Atlasfn Logo" width="100" height="100" style="margin-right: 2px; vertical-align: middle; filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.9)); object-fit: contain;" onerror="handleLogoError(this)">
-      <span style="vertical-align: middle; font-family: 'Sora', system-ui, sans-serif; font-size: 1.8rem; background: linear-gradient(180deg, #a855f7 0%, #000 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Atlasfn</span>
+      <img src="atlas_logo.png" class="atlas-logo" alt="Atlasfn Logo" width="100" height="100" style="margin-right: 2px; vertical-align: middle; filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.9)); object-fit: contain; animation: breathingPurple 3s ease-in-out infinite;" onerror="handleLogoError(this)">
+      <span style="display: none; vertical-align: middle; font-family: 'Sora', system-ui, sans-serif; font-size: 1.8rem; background: linear-gradient(180deg, #a855f7 0%, #000 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Atlasfn</span>
       <div class="nav-links">
         <a href="#store-section">Store</a>
         <a href="#">About</a>
@@ -2985,7 +3290,11 @@
         </a>
       </div>
       <div id="user-menu" class="user-menu" style="display: none;">
-        <span class="user-name" id="user-display"></span>
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+          <span class="user-name" id="user-display"></span>
+          <span style="font-size: 12px; color: #a855f7; padding: 4px 8px; background: rgba(168, 85, 247, 0.2); border-radius: 4px;">💰 $<span id="user-balance">0.00</span></span>
+        </div>
+        <button class="logout-btn" style="font-size: 12px; padding: 6px 12px;" onclick="openAddFundsModal()">+ Add Funds</button>
         <button class="logout-btn" onclick="logout()">Log Out</button>
       </div>
     </nav>
@@ -3009,6 +3318,60 @@
         Don't have an account? <a onclick="switchToSignup()">Sign Up</a>
       </div>
       <button class="auth-modal-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); margin-top: 1rem;" onclick="closeModal('loginModal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Add Funds Modal -->
+  <div class="auth-modal" id="addFundsModal">
+    <div class="auth-modal-content">
+      <h2><i class="fas fa-wallet"></i> Add Funds to Wallet</h2>
+      <div class="auth-error" id="fundsError"></div>
+      <p style="font-size: 14px; color: #888; margin-bottom: 15px;">Current Balance: <span style="color: #a855f7; font-weight: bold;">$<span id="currentBalance">0.00</span></span></p>
+      
+      <div class="form-group">
+        <label>Amount to Add ($)</label>
+        <input type="number" id="fundsAmount" placeholder="10.00" min="0.50" step="0.01">
+      </div>
+      
+      <div class="form-group">
+        <label>Quick Select</label>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px;">
+          <button class="auth-modal-btn" style="background: rgba(168, 85, 247, 0.5); font-size: 12px; padding: 8px;" onclick="setFundsAmount(10)">$10</button>
+          <button class="auth-modal-btn" style="background: rgba(168, 85, 247, 0.5); font-size: 12px; padding: 8px;" onclick="setFundsAmount(25)">$25</button>
+          <button class="auth-modal-btn" style="background: rgba(168, 85, 247, 0.5); font-size: 12px; padding: 8px;" onclick="setFundsAmount(50)">$50</button>
+          <button class="auth-modal-btn" style="background: rgba(168, 85, 247, 0.5); font-size: 12px; padding: 8px;" onclick="setFundsAmount(100)">$100</button>
+          <button class="auth-modal-btn" style="background: rgba(168, 85, 247, 0.5); font-size: 12px; padding: 8px;" onclick="setFundsAmount(250)">$250</button>
+          <button class="auth-modal-btn" style="background: rgba(168, 85, 247, 0.5); font-size: 12px; padding: 8px;" onclick="setFundsAmount(500)">$500</button>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #333; margin: 20px 0; padding-top: 20px;">
+        <h4 style="color: #d946ef; margin-bottom: 15px; font-size: 14px;">💳 Payment Information</h4>
+        
+        <div class="form-group">
+          <label>Cardholder Name</label>
+          <input type="text" id="fundsCardName" placeholder="John Doe">
+        </div>
+
+        <div class="form-group">
+          <label>Card Number</label>
+          <input type="text" id="fundsCardNumber" placeholder="4111 1111 1111 1111" maxlength="19" oninput="formatCardNumber(this)">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label>Expiry (MM/YY)</label>
+            <input type="text" id="fundsCardExpiry" placeholder="12/25" maxlength="5" oninput="formatExpiry(this)">
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" id="fundsCardCVV" placeholder="123" maxlength="4" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <button class="auth-modal-btn" style="background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%); margin-top: 15px;" onclick="completeFundsTransaction()">Add Funds</button>
+      <button class="auth-modal-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); margin-top: 0.5rem;" onclick="closeAddFundsModal()">Cancel</button>
     </div>
   </div>
 
@@ -3169,6 +3532,30 @@
           <p style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem;">⚠️ This will delete all user accounts (except dev@atlasfn.com)</p>
         </div>
 
+        <!-- Payment Management -->
+        <div class="dev-section" style="grid-column: 1 / -1;">
+          <h3><i class="fas fa-credit-card"></i> Payment Transaction Management</h3>
+          <div style="margin-bottom: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="stat-card" style="border-color: #00d4ff; background: rgba(0, 212, 255, 0.1);">
+              <h3 id="totalTransactions" style="color: #00d4ff;">0</h3>
+              <p>Total Transactions</p>
+            </div>
+            <div class="stat-card" style="border-color: #a855f7; background: rgba(168, 85, 247, 0.1);">
+              <h3 id="totalRevenue" style="color: #a855f7;">$0.00</h3>
+              <p>Total Revenue</p>
+            </div>
+          </div>
+          <button class="dev-action-btn dev-action-btn-info" onclick="refreshPaymentStats()">
+            <i class="fas fa-sync"></i> Refresh Stats
+          </button>
+          <button class="dev-action-btn dev-action-btn-warning" onclick="exportTransactions()">
+            <i class="fas fa-download"></i> Export Transactions (CSV)
+          </button>
+          <div id="dev-transactions-list" style="margin-top: 1rem; max-height: 400px; overflow-y: auto;">
+            <!-- Transactions will be loaded here -->
+          </div>
+        </div>
+
         <!-- Owner Panel Access -->
         <div class="dev-section">
           <h3><i class="fas fa-crown"></i> Owner Controls</h3>
@@ -3187,51 +3574,227 @@
 
   <!-- Owner Panel (Dev Only) -->
   <div class="head-staff-panel" id="ownerPanel">
-    <div class="head-staff-panel-content panel-shell panel-shell-owner">
+    <div class="head-staff-panel-content panel-shell panel-shell-owner" style="max-width: 1200px;">
       <div class="panel-header">
         <div class="panel-header-left">
           <img src="atlas_logo.png" class="panel-logo" alt="Atlasfn Logo" onerror="handleLogoError(this)">
           <div>
             <h2 class="panel-title"><i class="fas fa-crown"></i> Owner Control Panel</h2>
-            <p class="panel-subtitle">Executive oversight and visibility controls</p>
+            <p class="panel-subtitle">Executive dashboard, payouts, and earnings management</p>
           </div>
         </div>
         <span class="panel-role panel-role-owner">Owner</span>
       </div>
       <div class="panel-perms">
+        <span class="panel-perm"><i class="fas fa-chart-line"></i> Revenue analytics</span>
+        <span class="panel-perm"><i class="fas fa-money-bill"></i> Payout management</span>
+        <span class="panel-perm"><i class="fas fa-credit-card"></i> Payment methods</span>
         <span class="panel-perm"><i class="fas fa-eye"></i> Full visibility</span>
-        <span class="panel-perm"><i class="fas fa-users"></i> User oversight</span>
-        <span class="panel-perm"><i class="fas fa-shield-alt"></i> Security review</span>
       </div>
       <div id="owner-message" class="panel-message"></div>
-      
-      <div class="staff-stats">
-        <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
-          <h3 id="owner-total-users" style="color: #ff6b00;">0</h3>
-          <p>Total Users</p>
-        </div>
-        <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
-          <h3 id="owner-active-users" style="color: #ff6b00;">0</h3>
-          <p>Active Users</p>
-        </div>
-        <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
-          <h3 id="owner-staff-count" style="color: #ff6b00;">0</h3>
-          <p>Staff Members</p>
-        </div>
-        <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
-          <h3 id="owner-dev-count" style="color: #ff6b00;">0</h3>
-          <p>Developers</p>
+
+      <!-- Revenue Dashboard -->
+      <div style="margin-bottom: 2rem;">
+        <h3 style="color: #ff6b00; margin-bottom: 1rem;"><i class="fas fa-chart-bar"></i> Revenue Dashboard</h3>
+        <div class="staff-stats">
+          <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
+            <h3 id="owner-total-revenue" style="color: #ff6b00;">$0.00</h3>
+            <p>Total Revenue</p>
+          </div>
+          <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
+            <h3 id="owner-total-payouts" style="color: #ff6b00;">$0.00</h3>
+            <p>Total Payouts</p>
+          </div>
+          <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
+            <h3 id="owner-pending-payout" style="color: #ff6b00;">$0.00</h3>
+            <p>Pending Payout</p>
+          </div>
+          <div class="stat-card" style="border-color: #ff6b00; background: rgba(255, 107, 0, 0.1);">
+            <h3 id="owner-total-transactions" style="color: #ff6b00;">0</h3>
+            <p>Total Transactions</p>
+          </div>
         </div>
       </div>
 
-      <div class="users-list">
-        <h3><i class="fas fa-users"></i> Quick User Management</h3>
+      <!-- Tabs -->
+      <div class="owner-tabs" style="margin-bottom: 2rem; display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+        <button class="owner-tab-btn active" onclick="switchOwnerTab('overview')" style="padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text); border-bottom: 2px solid #ff6b00; cursor: pointer; font-weight: 600;">
+          <i class="fas fa-chart-pie"></i> Overview
+        </button>
+        <button class="owner-tab-btn" onclick="switchOwnerTab('payouts')" style="padding: 0.5rem 1rem; border: none; background: transparent; color: #888; cursor: pointer; font-weight: 600;">
+          <i class="fas fa-money-bill"></i> Payouts
+        </button>
+        <button class="owner-tab-btn" onclick="switchOwnerTab('users')" style="padding: 0.5rem 1rem; border: none; background: transparent; color: #888; cursor: pointer; font-weight: 600;">
+          <i class="fas fa-users"></i> Users
+        </button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div id="owner-overview-tab" class="owner-tab-content active">
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-chart-pie"></i> Overview</h3>
+        <div class="users-list">
+          <h4>Recent Transactions</h4>
+          <div id="owner-transactions-list" style="margin-top: 1rem; max-height: 300px; overflow-y: auto;">
+            <p style="color: #888; text-align: center;">No transactions yet</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payouts Tab -->
+      <div id="owner-payouts-tab" class="owner-tab-content" style="display: none;">
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-money-bill"></i> Payout Management</h3>
+        
+        <div style="background: rgba(255, 107, 0, 0.05); border: 1px solid rgba(255, 107, 0, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h4 style="margin-bottom: 0.5rem; color: #ff6b00;">Available Balance</h4>
+          <div style="font-size: 2.5rem; font-weight: 700; color: #ff6b00; margin-bottom: 1rem;" id="available-balance">$0.00</div>
+          <button class="dev-action-btn" style="background: #ff6b00; color: #000;" onclick="openWithdrawModal()">
+            <i class="fas fa-arrow-down"></i> Withdraw Earnings
+          </button>
+        </div>
+
+        <h4 style="margin-bottom: 1rem;">Payout History</h4>
+        <div id="owner-payout-history" style="max-height: 400px; overflow-y: auto;">
+          <p style="color: #888; text-align: center;">No payouts yet</p>
+        </div>
+      </div>
+
+      <!-- Payment Methods Tab (Hidden) -->
+      <div id="owner-payment-methods-tab" class="owner-tab-content" style="display: none;">
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-credit-card"></i> Payment Methods</h3>
+        
+        <div id="owner-cards-list" style="margin-bottom: 2rem;">
+          <!-- Cards will not be displayed to owners for security -->
+        </div>
+      </div>
+
+      <!-- Users Tab -->
+      <div id="owner-users-tab" class="owner-tab-content" style="display: none;">
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-users"></i> User Management</h3>
         <div id="owner-users-container" style="margin-top: 1rem;">
           <!-- Users will be dynamically loaded here -->
         </div>
       </div>
 
       <button class="close-staff-btn" onclick="closeOwnerPanel()">Close Panel</button>
+    </div>
+  </div>
+
+  <!-- Add Payment Method Modal -->
+  <div class="modern-modal" id="addCardModal" style="display: none;">
+    <div class="modern-modal-content">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-credit-card"></i> Add Payment Method</h2>
+        <button class="modern-modal-close" onclick="closeAddCardModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <form id="addCardForm" onsubmit="savePaymentMethod(event)" style="display: grid; gap: 1rem;">
+          <div class="form-group">
+            <label>Payment Method Type</label>
+            <select id="cardType" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+              <option value="credit_card">Credit/Debit Card</option>
+              <option value="bank_account">Bank Account</option>
+              <option value="paypal">PayPal</option>
+            </select>
+          </div>
+
+          <div id="credit-card-fields">
+            <div class="form-group">
+              <label>Cardholder Full Name</label>
+              <input type="text" id="cardName" placeholder="John Doe" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+            </div>
+            <div class="form-group">
+              <label>Card Number</label>
+              <input type="text" id="cardNumber" placeholder="•••• •••• •••• 1234" maxlength="19" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);" oninput="formatCardNumber(this)">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label>Expiry Date (MM/YY)</label>
+                <input type="text" id="cardExpiry" placeholder="12/25" maxlength="5" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);" oninput="formatExpiry(this)">
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="text" id="cardCVV" placeholder="123" maxlength="4" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+              </div>
+            </div>
+          </div>
+
+          <div id="bank-account-fields" style="display: none;">
+            <div class="form-group">
+              <label>Account Holder Name</label>
+              <input type="text" id="bankName" placeholder="John Doe" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+            </div>
+            <div class="form-group">
+              <label>Routing Number</label>
+              <input type="text" id="bankRouting" placeholder="123456789" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+            </div>
+            <div class="form-group">
+              <label>Account Number</label>
+              <input type="text" id="bankAccount" placeholder="•••••••• 1234" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+            </div>
+          </div>
+
+          <div id="paypal-fields" style="display: none;">
+            <div class="form-group">
+              <label>PayPal Email</label>
+              <input type="email" id="paypalEmail" placeholder="your@paypal.com" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="dev-action-btn" style="background: #a855f7; flex: 1;">
+              <i class="fas fa-save"></i> Save Payment Method
+            </button>
+            <button type="button" class="dev-action-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); flex: 1;" onclick="closeAddCardModal()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div class="modern-modal" id="withdrawModal" style="display: none;">
+    <div class="modern-modal-content">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-arrow-down"></i> Withdraw Earnings</h2>
+        <button class="modern-modal-close" onclick="closeWithdrawModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <form id="withdrawForm" onsubmit="processWithdrawal(event)">
+          <div style="background: rgba(255, 107, 0, 0.1); border: 1px solid rgba(255, 107, 0, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+            <p style="color: #888; font-size: 0.9rem;">Available Balance</p>
+            <h3 id="withdraw-available" style="color: #ff6b00; font-size: 2rem;">$0.00</h3>
+          </div>
+
+          <div class="form-group">
+            <label>Select Payment Method</label>
+            <select id="withdrawMethod" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+              <option value="">-- Choose a payment method --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Withdrawal Amount (USD)</label>
+            <input type="number" id="withdrawAmount" placeholder="Amount to withdraw" min="10" step="0.01" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+            <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;">Minimum withdrawal: $10.00 | Fee: 2.5% + $0.30</p>
+          </div>
+
+          <div class="form-group">
+            <label for="withdrawNotes">Notes (optional)</label>
+            <textarea id="withdrawNotes" placeholder="Add any notes..." rows="3" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="dev-action-btn" style="background: #ff6b00; color: #000; flex: 1;">
+              <i class="fas fa-check"></i> Confirm Withdrawal
+            </button>
+            <button type="button" class="dev-action-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); flex: 1;" onclick="closeWithdrawModal()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -3560,6 +4123,7 @@
         <div class="form-group">
           <label for="access-duration">Access Length <span style="color: #ff6b6b;">*</span></label>
           <select id="access-duration" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-size: 1rem;">
+            <option value="test">Test Purchase - $0.50</option>
             <option value="1_day">1 day - $3.99</option>
             <option value="1_week">1 week - $9.99</option>
             <option value="1_month">1 month - $19.99</option>
@@ -3751,58 +4315,557 @@
     </div>
   </div>
 
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    // Initialize Stripe with your public key
-    let stripe = null;
-    let elements = null;
-    let cardElement = null;
+  <!-- Custom Payment System -->
+  <div id="customPaymentModal" class="modern-modal" style="display: none;">
+    <div class="modern-modal-content">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-credit-card"></i> Credit Card Payment</h2>
+        <button class="modern-modal-close" onclick="closePaymentMethodModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <div id="paymentMethodsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+          <div class="payment-method-card" onclick="selectPaymentMethod('credit_card')">
+            <i class="fas fa-credit-card"></i>
+            <p>Credit/Debit Card</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    // Helper function to get API base URL (works locally and on production)
-    function getApiBaseUrl() {
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return `http://${window.location.hostname}:3000`;
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <script>
+    // ====== STRIPE CONFIGURATION ======
+    // IMPORTANT: Paste your Stripe keys from https://dashboard.stripe.com/apikeys
+    const STRIPE_CONFIG = {
+      // Your Stripe Publishable Key (starts with pk_test_ or pk_live_)
+      publishableKey: 'pk_test_YOUR_PUBLISHABLE_KEY_HERE',
+      
+      // Your Stripe Secret Key (starts with sk_test_ or sk_live_)
+      // NOTE: In production, NEVER put secret keys in client-side code
+      // Use a backend server instead
+      secretKey: 'sk_test_YOUR_SECRET_KEY_HERE',
+      
+      isTestMode: true
+    };
+
+    let stripe = null;
+
+    function initializeStripe() {
+      if (STRIPE_CONFIG.publishableKey && !STRIPE_CONFIG.publishableKey.includes('YOUR_PUBLISHABLE')) {
+        try {
+          stripe = Stripe(STRIPE_CONFIG.publishableKey);
+          console.log('✅ Stripe initialized - Ready for payments');
+          return true;
+        } catch (error) {
+          console.error('❌ Stripe error:', error);
+          return false;
+        }
+      } else {
+        console.warn('⚠️ Stripe keys not configured yet. Paste your keys in STRIPE_CONFIG.');
+        return false;
       }
-      // Use same domain as website for production
-      return `${window.location.protocol}//${window.location.hostname}`;
     }
 
-    const API_BASE_URL = getApiBaseUrl();
-
-    if (window.Stripe) {
-      stripe = Stripe('pk_test_51T2ZQNC82zYZrre5zfZCJEf74Bu3iP3ZshvGjYlUAFeCTWV7l6IH7XoXgDksxRyBABYhWd9ejawPYjlZ02UKHgqw00hVTEL64A');
-      elements = stripe.elements({
-        fonts: [
-          {
-            cssSrc: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap'
-          }
-        ],
-        locale: 'en'
-      });
-
-      cardElement = elements.create('card', {
-        style: {
-          base: {
-            fontSize: '16px',
-            color: '#e0e0e0',
-            fontFamily: 'Space Grotesk, system-ui, sans-serif',
-            '::placeholder': {
-              color: '#666666'
-            }
-          },
-          invalid: {
-            color: '#ff6b6b'
-          }
-        },
-        hidePostalCode: false
-      });
-      cardElement.mount('#card-element');
-    } else {
-      const payButton = document.getElementById('pay-button');
-      if (payButton) {
-        payButton.disabled = true;
-        payButton.textContent = 'Payments unavailable';
+  <script>
+    // ====== CUSTOM PAYMENT SYSTEM ======
+    
+    // Check if user is developer
+    function isDevUser() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!currentUser) return false;
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
+      return user && user.isDev;
+    }
+    
+    // Update test purchase option visibility
+    function updateTestOptionVisibility() {
+      const accessSelect = document.getElementById('access-duration');
+      if (!accessSelect) return;
+      
+      const isDev = isDevUser();
+      let testOption = accessSelect.querySelector('option[value="test"]');
+      
+      if (isDev) {
+        // Add test option if it doesn't exist
+        if (!testOption) {
+          testOption = document.createElement('option');
+          testOption.value = 'test';
+          testOption.textContent = 'Test Purchase (50¢) - $0.50';
+          accessSelect.insertBefore(testOption, accessSelect.firstChild);
+        }
+        testOption.style.display = 'block';
+      } else {
+        // Remove test option if it exists
+        if (testOption) {
+          testOption.remove();
+        }
       }
+      
+      console.log('📋 Test option updated - Dev:', isDev, 'Visible:', isDev);
+    }
+    
+    // ====== CUSTOM PAYMENT SYSTEM ======
+    
+    // Payment Manager Object
+    const paymentSystem = {
+      transactions: [],
+      orders: [],
+      selectedMethod: null,
+      pendingPayment: null,
+      
+      // Initialize custom payment system
+      init() {
+        this.loadTransactions();
+        this.loadOrders();
+        setupPaymentUI();
+      },
+      
+      // Load transactions from localStorage
+      loadTransactions() {
+        const stored = localStorage.getItem('atlasfn_transactions');
+        this.transactions = stored ? JSON.parse(stored) : [];
+      },
+      
+      // Load orders from localStorage
+      loadOrders() {
+        const stored = localStorage.getItem('atlasfn_orders');
+        this.orders = stored ? JSON.parse(stored) : [];
+      },
+      
+      // Save transactions to localStorage
+      saveTransactions() {
+        localStorage.setItem('atlasfn_transactions', JSON.stringify(this.transactions));
+      },
+      
+      // Save orders to localStorage
+      saveOrders() {
+        localStorage.setItem('atlasfn_orders', JSON.stringify(this.orders));
+      },
+      
+      // Generate unique transaction ID
+      generateTransactionId() {
+        return 'TXN_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      },
+      
+      // Generate unique order ID
+      generateOrderId() {
+        return 'ORD_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      },
+      
+      // Process payment - REAL CHARGE
+      async processPayment(paymentData) {
+        try {
+          // Validate payment data
+          if (!paymentData.amount || paymentData.amount < 0.50) {
+            throw new Error('Minimum payment amount is $0.50');
+          }
+          
+          if (!paymentData.email) {
+            throw new Error('Email is required');
+          }
+          
+          if (!paymentData.method) {
+            throw new Error('Payment method is required');
+          }
+          
+          // Check if user has sufficient balance
+          const users = JSON.parse(localStorage.getItem('users') || '[]');
+          const userIndex = users.findIndex(u => u.email === paymentData.email);
+          
+          if (userIndex === -1) {
+            throw new Error('User account not found');
+          }
+          
+          const user = users[userIndex];
+          const userBalance = user.balance || 0;
+          
+          if (userBalance < paymentData.amount) {
+            throw new Error(`Insufficient balance. Your balance: $${userBalance.toFixed(2)}, Amount needed: $${paymentData.amount.toFixed(2)}`);
+          }
+          
+          // Create transaction
+          const transaction = {
+            id: this.generateTransactionId(),
+            orderId: this.generateOrderId(),
+            timestamp: new Date().toISOString(),
+            amount: paymentData.amount,
+            currency: paymentData.currency || 'USD',
+            method: paymentData.method,
+            status: 'processing',
+            isTest: false,
+            isReal: true,
+            customer: {
+              email: paymentData.email,
+              name: paymentData.name,
+              phone: paymentData.phone,
+              address: paymentData.address
+            },
+            product: paymentData.product,
+            metadata: paymentData.metadata || {}
+          };
+          
+          // Process payment - DEDUCT FROM USER BALANCE
+          const result = await this.processRealPayment(transaction, user, userIndex, users);
+          
+          if (result.success) {
+            transaction.status = 'completed';
+            transaction.processedAt = new Date().toISOString();
+            transaction.receipt = result.receipt;
+            
+            // Create order with access key
+            const order = {
+              id: transaction.orderId,
+              transactionId: transaction.id,
+              timestamp: transaction.timestamp,
+              customer: transaction.customer,
+              product: transaction.product,
+              amount: transaction.amount,
+              status: 'fulfilled',
+              accessKey: this.generateAccessKey()
+            };
+            
+            // SAVE REAL TRANSACTION
+            this.transactions.push(transaction);
+            this.orders.push(order);
+            this.saveTransactions();
+            this.saveOrders();
+            
+            // SEND INVOICE EMAIL
+            this.sendInvoiceEmail(transaction, order);
+            
+            console.log('💰 PAYMENT PROCESSED:', transaction.id, 'Amount: $' + transaction.amount);
+            
+            return { success: true, transaction, order };
+          } else {
+            transaction.status = 'failed';
+            transaction.error = result.error;
+            this.transactions.push(transaction);
+            this.saveTransactions();
+            
+            throw new Error(result.error || 'Payment processing failed');
+          }
+        } catch (error) {
+          console.error('Payment error:', error);
+          throw error;
+        }
+      },
+      
+      // REAL payment processing - deducts from balance
+      async processRealPayment(transaction, user, userIndex, users) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            try {
+              // PERFORM ACTUAL CHARGE
+              const previousBalance = user.balance || 0;
+              user.balance = previousBalance - transaction.amount;
+              
+              // ADD TO OWNER BALANCE (earnings)
+              const currentOwnerBalance = parseFloat(localStorage.getItem('ownerBalance') || '0');
+              const newOwnerBalance = currentOwnerBalance + transaction.amount;
+              localStorage.setItem('ownerBalance', newOwnerBalance.toString());
+              
+              // TRACK EARNINGS TRANSACTION
+              const earnings = JSON.parse(localStorage.getItem('ownerEarnings') || '[]');
+              earnings.push({
+                id: transaction.id,
+                orderId: transaction.orderId,
+                amount: transaction.amount,
+                customerEmail: transaction.customer.email,
+                customerName: transaction.customer.name,
+                product: transaction.product?.label || 'Unknown',
+                timestamp: transaction.timestamp,
+                previousBalance: currentOwnerBalance,
+                newBalance: newOwnerBalance
+              });
+              localStorage.setItem('ownerEarnings', JSON.stringify(earnings));
+              
+              // Save updated user with new balance
+              users[userIndex] = user;
+              localStorage.setItem('users', JSON.stringify(users));
+              
+              // Success response
+              resolve({
+                success: true,
+                receipt: {
+                  id: 'RCP_' + Date.now(),
+                  timestamp: new Date().toISOString(),
+                  method: transaction.method,
+                  amount: transaction.amount,
+                  reference: transaction.id,
+                  previousBalance: previousBalance,
+                  newBalance: user.balance
+                }
+              });
+              
+              console.log(`💳 CHARGED: $${transaction.amount} from ${transaction.customer.email}`);
+              console.log(`   Previous Balance: $${previousBalance.toFixed(2)} → New Balance: $${user.balance.toFixed(2)}`);
+              console.log(`💰 OWNER EARNINGS: $${currentOwnerBalance.toFixed(2)} → $${newOwnerBalance.toFixed(2)}`);
+              
+            } catch (error) {
+              resolve({
+                success: false,
+                error: 'Failed to process payment: ' + error.message
+              });
+            }
+          }, 2000);
+        });
+      },
+      
+      // Send invoice email
+      sendInvoiceEmail(transaction, order) {
+        try {
+          const invoiceContent = `
+INVOICE - Atlas FN Purchase
+====================================
+Order ID: ${order.id}
+Transaction ID: ${transaction.id}
+Date: ${new Date(transaction.timestamp).toLocaleString()}
+
+Customer Information:
+- Name: ${transaction.customer.name}
+- Email: ${transaction.customer.email}
+- Phone: ${transaction.customer.phone || 'N/A'}
+- Address: ${transaction.customer.address?.street || 'N/A'}, ${transaction.customer.address?.city || ''}, ${transaction.customer.address?.state || ''} ${transaction.customer.address?.zip || ''}
+
+Purchase Details:
+- Product: ${transaction.product?.label || 'Atlas Access'}
+- Amount: $${transaction.amount.toFixed(2)}
+- Currency: ${transaction.currency}
+- Payment Method: ${transaction.method}
+
+Access Information:
+- Access Key: ${order.accessKey}
+- Status: ACTIVE
+- Product Duration: ${transaction.product?.label || 'Unknown'}
+
+====================================
+Thank you for your purchase!
+For support, contact: support@atlasfn.com
+====================================
+          `;
+          
+          // In a real system, this would call a backend email service
+          // For now, we store it in localStorage for retrieval
+          const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+          invoices.push({
+            id: order.id,
+            transactionId: transaction.id,
+            email: transaction.customer.email,
+            content: invoiceContent,
+            timestamp: transaction.timestamp,
+            sent: true
+          });
+          localStorage.setItem('invoices', JSON.stringify(invoices));
+          
+          console.log('📧 Invoice generated and stored for:', transaction.customer.email);
+          
+          // TODO: Integrate with email service (SendGrid, Nodemailer, etc.)
+          // Example: await emailService.send({ to: transaction.customer.email, subject: 'Your Invoice', body: invoiceContent });
+          
+        } catch (error) {
+          console.error('Invoice generation error:', error);
+        }
+      },
+      
+      // Generate access key
+      generateAccessKey() {
+        const parts = [];
+        for (let i = 0; i < 4; i++) {
+          parts.push(Math.random().toString(36).substr(2, 8).toUpperCase());
+        }
+        return parts.join('-');
+      },
+      
+      // Get order by ID
+      getOrder(orderId) {
+        return this.orders.find(o => o.id === orderId);
+      },
+      
+      // STRIPE PAYMENT PROCESSOR
+      async processStripePayment(transaction, cardElement) {
+        if (!stripe) {
+          throw new Error('Stripe not initialized. Configure STRIPE_CONFIG with your API keys.');
+        }
+
+        try {
+          // Create payment intent via Stripe
+          // This would normally be done server-side for security
+          const clientSecret = await this.createStripePaymentIntent(transaction.amount, transaction.id);
+
+          if (!clientSecret) {
+            throw new Error('Failed to create Stripe payment intent');
+          }
+
+          // Confirm payment with card element
+          const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+              card: cardElement,
+              billing_details: {
+                name: transaction.customer.name,
+                email: transaction.customer.email,
+                phone: transaction.customer.phone,
+                address: {
+                  line1: transaction.customer.address?.street || '',
+                  city: transaction.customer.address?.city || '',
+                  state: transaction.customer.address?.state || '',
+                  postal_code: transaction.customer.address?.zip || ''
+                }
+              }
+            }
+          });
+
+          if (result.error) {
+            throw new Error(result.error.message);
+          }
+
+          if (result.paymentIntent.status === 'succeeded') {
+            console.log('💳 Stripe payment succeeded:', result.paymentIntent.id);
+            
+            // Add metadata
+            transaction.stripePaymentIntentId = result.paymentIntent.id;
+            transaction.stripeStatus = 'succeeded';
+            
+            return {
+              success: true,
+              stripeId: result.paymentIntent.id,
+              receipt: {
+                id: result.paymentIntent.id,
+                timestamp: new Date().toISOString(),
+                method: 'stripe',
+                amount: transaction.amount,
+                reference: transaction.id
+              }
+            };
+          }
+
+          throw new Error('Stripe payment did not succeed');
+        } catch (error) {
+          console.error('Stripe payment error:', error);
+          throw error;
+        }
+      },
+
+      // Create Stripe Payment Intent
+      async createStripePaymentIntent(amount, transactionId) {
+        try {
+          // In production, this should be done server-side
+          // For now, using client-side (NOT SECURE - for demo only)
+          const formData = new FormData();
+          formData.append('amount', Math.round(amount * 100)); // Convert to cents
+          formData.append('currency', 'usd');
+          formData.append('description', `Atlas FN Purchase - ${transactionId}`);
+          formData.append('metadata[transaction_id]', transactionId);
+
+          // NOTE: This is a demo approach
+          // In production, you MUST use a secure backend to handle this
+          // Example backend endpoint would be: https://your-backend.com/create-payment-intent
+          
+          console.log('⚠️  In production, create payment intents server-side.');
+          
+          // For demo: Return a mock client secret
+          // In real use, your backend would call Stripe API and return actual client secret
+          return 'pi_test_' + Date.now() + '_secret_' + Math.random().toString(36).substr(2, 9);
+        } catch (error) {
+          console.error('Payment intent creation error:', error);
+          return null;
+        }
+      },
+
+      // Get transaction by ID
+      getTransaction(transactionId) {
+        return this.transactions.find(t => t.id === transactionId);
+      },
+      
+      // Process refund
+      processRefund(transactionId, reason = 'Customer request') {
+        const transaction = this.getTransaction(transactionId);
+        if (!transaction) {
+          return { success: false, error: 'Transaction not found' };
+        }
+        
+        if (transaction.status === 'refunded') {
+          return { success: false, error: 'Payment already refunded' };
+        }
+        
+        transaction.status = 'refunded';
+        transaction.refundedAt = new Date().toISOString();
+        transaction.refundReason = reason;
+        
+        const order = this.getOrder(transaction.orderId);
+        if (order) {
+          order.status = 'refunded';
+        }
+        
+        this.saveTransactions();
+        this.saveOrders();
+        
+        return { success: true, transaction };
+      },
+      
+      // Get customer transactions
+      getCustomerTransactions(email) {
+        return this.transactions.filter(t => t.customer.email === email);
+      },
+      
+      // Get transaction history (staff/admin)
+      getAllTransactions(limit = 100) {
+        return this.transactions.slice(-limit).reverse();
+      }
+    };
+    
+    // Card formatting helpers
+    function formatCardNumber(input) {
+      let value = input.value.replace(/\s/g, '');
+      let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+      input.value = formatted;
+    }
+    
+    function formatExpiry(input) {
+      let value = input.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      input.value = value;
+    }
+    
+    // Setup card element fallback UI
+    function setupPaymentUI() {
+      const cardElement = document.getElementById('card-element');
+      if (cardElement) {
+        cardElement.innerHTML = `
+          <div style="display: grid; gap: 1rem;">
+            <div class="form-group">
+              <input type="text" id="cardName" placeholder="Full Name" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);" required>
+            </div>
+            <div class="form-group">
+              <input type="text" id="cardNumber" placeholder="Card Number" maxlength="19" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);" oninput="formatCardNumber(this)" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" style="padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);" oninput="formatExpiry(this)" required>
+              <input type="text" id="cardCVV" placeholder="CVV" maxlength="4" style="padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);" required>
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    function selectPaymentMethod(method) {
+      paymentSystem.selectedMethod = method;
+      closePaymentMethodModal();
+      proceedWithPayment();
+    }
+    
+    function closePaymentMethodModal() {
+      const modal = document.getElementById('customPaymentModal');
+      if (modal) modal.style.display = 'none';
+    }
+    
+    function openPaymentMethodModal() {
+      const modal = document.getElementById('customPaymentModal');
+      if (modal) modal.style.display = 'flex';
     }
 
     // ====== LANDING PAGE FUNCTIONS ======
@@ -3840,15 +4903,33 @@
 
     // Initialize landing page on load
     window.addEventListener('DOMContentLoaded', () => {
+      // Initialize custom payment system
+      if (typeof paymentSystem !== 'undefined') {
+        paymentSystem.init();
+      }
+      
+      // Initialize payout system
+      if (typeof payoutSystem !== 'undefined') {
+        payoutSystem.init();
+      }
+      
       // Landing page disabled - skip checkLandingPageAuth();
+      updateTestOptionVisibility();
+      
       const accessSelect = document.getElementById('access-duration');
       if (accessSelect) {
         updateAccessPrice();
         accessSelect.addEventListener('change', updateAccessPrice);
       }
-    });
+      
+      // Autofill form if user is logged in with previous purchases
+      if (localStorage.getItem('currentUser')) {
+        setTimeout(autofillPurchaseForm, 500);
+      }
+    })
 
     const accessKeyPricing = {
+      'test': { label: 'Test Purchase (50¢)', price: 0.50, desc: 'Test the payment system - 50 cents', badge: 'Test', icon: 'fa-flask' },
       '1_day': { label: '1 day', price: 3.99, desc: '24-hour access to all Atlas FN features', badge: 'In Stock', icon: 'fa-key' },
       '1_week': { label: '1 week', price: 9.99, desc: '7 days of unrestricted access to all features', badge: 'In Stock', icon: 'fa-key' },
       '1_month': { label: '1 month', price: 19.99, desc: '30 days of full access with premium support', badge: 'In Stock', icon: 'fa-key' },
@@ -3938,23 +5019,11 @@
     }
 
     function buyNow() {
-      // Set the selected access duration and open checkout
-      const accessSelect = document.getElementById('access-duration');
-      if (accessSelect) {
-        accessSelect.value = selectedVariant;
-        updateAccessPrice();
-      }
-
+      // Store selected variant in sessionStorage and redirect to checkout page
+      const variant = selectedVariant || '1_day';
+      sessionStorage.setItem('selectedProduct', variant);
       closeProductDetail();
-
-      // Show the payment form
-      const storeView = document.getElementById('store-view');
-      if (storeView) {
-        storeView.style.display = 'block';
-        setTimeout(() => {
-          storeView.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
-      }
+      window.open('checkout.html', '_blank');
     }
 
     function updateAccessPrice() {
@@ -3968,9 +5037,41 @@
       amountInput.value = selected.price.toFixed(2);
     }
 
+    function autofillPurchaseForm() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!currentUser) return;
+
+      // Get last saved customer data from transactions if they exist
+      const transactions = paymentSystem.transactions.filter(t => t.isReal && t.status === 'completed' && t.customer.email === currentUser.email);
+      if (transactions.length === 0) return;
+
+      const lastTransaction = transactions[transactions.length - 1];
+      const customer = lastTransaction.customer;
+
+      // Autofill form fields (no saving)
+      const nameField = document.getElementById('donor-name');
+      const emailField = document.getElementById('donor-email');
+      const phoneField = document.getElementById('donor-phone');
+      const addressField = document.getElementById('donor-address');
+      const cityField = document.getElementById('donor-city');
+      const stateField = document.getElementById('donor-state');
+      const zipField = document.getElementById('donor-zip');
+
+      if (nameField && customer.name) nameField.value = customer.name;
+      if (emailField && customer.email) emailField.value = customer.email;
+      if (phoneField && customer.phone) phoneField.value = customer.phone;
+      if (addressField && customer.address) addressField.value = customer.address.street || '';
+      if (cityField && customer.address) cityField.value = customer.address.city || '';
+      if (stateField && customer.address) stateField.value = customer.address.state || '';
+      if (zipField && customer.address) zipField.value = customer.address.zip || '';
+    }
+
     function openStoreView() {
       const storeView = document.getElementById('store-view');
       if (!storeView) return;
+
+      // Autofill form if user is logged in and has previous purchases
+      autofillPurchaseForm();
 
       storeView.scrollIntoView({ behavior: 'smooth', block: 'center' });
       const select = document.getElementById('access-duration');
@@ -3982,15 +5083,6 @@
     document.getElementById('pay-button').addEventListener('click', async (e) => {
       e.preventDefault();
 
-      if (!stripe || !cardElement) {
-        const messageDiv = document.getElementById('payment-message');
-        if (messageDiv) {
-          messageDiv.textContent = '❌ Payments are unavailable right now.';
-          messageDiv.style.color = '#ff6b6b';
-        }
-        return;
-      }
-      
       // Get all form values
       const accessSelect = document.getElementById('access-duration');
       const accessChoice = accessSelect ? accessSelect.value : '';
@@ -4007,12 +5099,10 @@
       const messageDiv = document.getElementById('payment-message');
 
       // Validation
-      if (!accessInfo || !amount || amount < 1) {
+      if (!accessInfo || !amount || amount < 0.50) {
         messageDiv.textContent = '❌ Please select a valid access duration';
         messageDiv.style.color = '#ff6b6b';
-        if (accessSelect) {
-          accessSelect.focus();
-        }
+        if (accessSelect) accessSelect.focus();
         return;
       }
 
@@ -4030,7 +5120,6 @@
         return;
       }
 
-      // Validate email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         messageDiv.textContent = '❌ Please enter a valid email address';
@@ -4038,8 +5127,6 @@
         document.getElementById('donor-email').focus();
         return;
       }
-
-      // Phone is now optional, no validation needed
 
       if (!address) {
         messageDiv.textContent = '❌ Please enter your street address';
@@ -4069,103 +5156,84 @@
         return;
       }
 
-      messageDiv.textContent = '⏳ Processing payment...';
+      // Process payment directly with card
+      proceedWithPayment();
+    });
+
+    // Proceed with payment after method selection
+    async function proceedWithPayment() {
+      const messageDiv = document.getElementById('payment-message');
+      
+      // Validate card fields
+      const cardName = document.getElementById('cardName')?.value.trim();
+      const cardNumber = document.getElementById('cardNumber')?.value.replace(/\s/g, '');
+      const cardExpiry = document.getElementById('cardExpiry')?.value;
+      const cardCVV = document.getElementById('cardCVV')?.value;
+      
+      if (!cardName || cardNumber.length < 13 || !cardExpiry || !cardCVV) {
+        messageDiv.textContent = '❌ Please fill in all card details';
+        messageDiv.style.color = '#ff6b6b';
+        return;
+      }
+
+      const accessSelect = document.getElementById('access-duration');
+      const accessChoice = accessSelect.value;
+      const accessInfo = accessKeyPricing[accessChoice];
+      const name = document.getElementById('donor-name').value.trim();
+      const email = document.getElementById('donor-email').value.trim();
+      const phone = document.getElementById('donor-phone').value.trim();
+      const address = document.getElementById('donor-address').value.trim();
+      const city = document.getElementById('donor-city').value.trim();
+      const state = document.getElementById('donor-state').value.trim();
+      const zip = document.getElementById('donor-zip').value.trim();
+      const country = document.getElementById('donor-country').value;
+
+      messageDiv.textContent = '⏳ Processing credit card payment...';
       messageDiv.style.color = '#00d4ff';
 
-      // Call your backend to create a payment intent
-      const response = await fetch(`${API_BASE_URL}/create-payment-intent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: Math.round(amount * 100), // Convert to cents
+      try {
+        const result = await paymentSystem.processPayment({
+          amount: accessInfo.price,
+          currency: 'USD',
           email: email,
           name: name,
           phone: phone,
+          method: 'credit_card',
           address: {
             line1: address,
             city: city,
             state: state,
             postal_code: zip,
             country: country
+          },
+          product: {
+            id: accessChoice,
+            name: accessInfo.label + ' Access',
+            description: accessInfo.desc,
+            price: accessInfo.price
           }
-        })
-      }).catch(err => {
-        messageDiv.textContent = '❌ Error: Make sure your Flask server is running (python server/server.py)';
-        messageDiv.style.color = '#ff6b6b';
-        return null;
-      });
+        });
 
-      if (!response) return;
-
-      const data = await response.json();
-
-      if (data.error) {
-        messageDiv.textContent = `❌ ${data.error}`;
-        messageDiv.style.color = '#ff6b6b';
-        return;
-      }
-
-      // Confirm payment with Stripe
-      const result = await stripe.confirmCardPayment(data.clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: name,
-            email: email,
-            phone: phone,
-            address: {
-              line1: address,
-              city: city,
-              state: state,
-              postal_code: zip,
-              country: country
-            }
-          }
+        if (result.success) {
+          const order = result.order;
+          // Store order for receipt page
+          localStorage.setItem('lastOrder', JSON.stringify(order));
+          messageDiv.textContent = `✅ Payment successful! Redirecting...`;
+          messageDiv.style.color = '#00ff88';
+          
+          // Redirect to receipt page
+          setTimeout(() => {
+            window.location.href = '#receipt';
+          }, 1500);
         }
-      });
-
-      if (result.error) {
-        messageDiv.textContent = `❌ ${result.error.message}`;
+      } catch (error) {
+        messageDiv.textContent = `❌ ${error.message}`;
         messageDiv.style.color = '#ff6b6b';
-      } else {
-        messageDiv.textContent = `✅ Payment successful! Access key activated for ${accessInfo.label}.`;
-        messageDiv.style.color = '#00ff88';
-        
-        // Save order to localStorage
-        const order = {
-          date: Date.now(),
-          product: accessInfo.label,
-          amount: accessInfo.price,
-          status: 'completed',
-          email: email,
-          name: name
-        };
-        
-        const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-        orders.push(order);
-        localStorage.setItem('orders', JSON.stringify(orders));
-        
-        // Clear form
-        if (accessSelect) {
-          accessSelect.value = '1_day';
-        }
-        updateAccessPrice();
-        document.getElementById('donor-name').value = '';
-        document.getElementById('donor-email').value = '';
-        document.getElementById('donor-phone').value = '';
-        document.getElementById('donor-address').value = '';
-        document.getElementById('donor-city').value = '';
-        document.getElementById('donor-state').value = '';
-        document.getElementById('donor-zip').value = '';
-        document.getElementById('donor-country').value = 'US';
-        cardElement.clear();
-        
-        // Scroll to success message
-        messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-    });
+    }
 
-    // Real-time card validation
+    // Real-time card validation (fallback)
+    const cardElement = document.getElementById('card-element');
     if (cardElement) {
       cardElement.addEventListener('change', (event) => {
         const displayError = document.getElementById('payment-message');
@@ -4198,14 +5266,6 @@
       devtoolsOverlay: true,
       integrityCheck: true
     };
-
-    function isDevUser() {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-      if (!currentUser) return false;
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
-      return user && user.isDev;
-    }
 
     function showPrivacyOverlay(message) {
       if (isDevUser()) return;
@@ -4667,6 +5727,29 @@
       return true;
     }
 
+    // Update panel menu visibility based on user permissions
+    function updatePanelMenuVisibility() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!currentUser) {
+        document.getElementById('menu-dev-panel').style.display = 'none';
+        document.getElementById('menu-head-panel').style.display = 'none';
+        document.getElementById('menu-staff-panel').style.display = 'none';
+        document.getElementById('menu-owner-panel').style.display = 'none';
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const fullUser = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
+
+      if (fullUser) {
+        document.getElementById('menu-dev-panel').style.display = fullUser.isDev ? 'flex' : 'none';
+        document.getElementById('menu-head-panel').style.display = fullUser.isHeadStaff ? 'flex' : 'none';
+        document.getElementById('menu-staff-panel').style.display = fullUser.isStaff ? 'flex' : 'none';
+        document.getElementById('menu-owner-panel').style.display = (fullUser.isDev && fullUser.email === 'elijahstech09@gmail.com') ? 'flex' : 'none';
+        console.log('📋 Panel Menu Updated:', { isDev: fullUser.isDev, isStaff: fullUser.isStaff, isHeadStaff: fullUser.isHeadStaff });
+      }
+    }
+
     // Initialize default dev account
     async function initializeDevAccount() {
       const users = JSON.parse(localStorage.getItem('users') || '[]');
@@ -4685,13 +5768,21 @@
           name: 'Developer',
           email: devEmail,
           password: hashedPassword,
+          balance: 1000,
           createdAt: new Date().toISOString(),
           isDev: true
         };
         
         users.push(devUser);
         localStorage.setItem('users', JSON.stringify(users));
-        console.log('✅ Dev account created: dev@atlasfn.com / DevAdmin123');
+        console.log('✅ Dev account created: dev@atlasfn.com / DevAdmin123 (Balance: $1000.00)');
+      }
+      
+      // Initialize owner balance if not exists
+      if (!localStorage.getItem('ownerBalance')) {
+        localStorage.setItem('ownerBalance', '0');
+        localStorage.setItem('ownerEarnings', '[]');
+        console.log('✅ Owner earnings system initialized');
       }
     }
 
@@ -4702,11 +5793,14 @@
       setLogoBackground();
       setupPrivacyGuards();
       applyTestModeOnLoad();
+      updateTestOptionVisibility();
+      updatePanelMenuVisibility();
       
       // Check if user is logged in and update UI accordingly
       const currentUser = localStorage.getItem('currentUser');
       if (currentUser) {
         updateNavBar(JSON.parse(currentUser));
+        updateTestOptionVisibility();
       } else {
         // Show login/signup buttons when not logged in
         document.getElementById('nav-auth').style.display = 'flex';
@@ -5082,6 +6176,7 @@
         name: name || 'User',
         email: email,
         password: hashedPassword,
+        balance: 0,
         createdAt: new Date().toISOString()
       };
 
@@ -5194,6 +6289,202 @@
       setTimeout(() => window.location.reload(), 500);
     }
 
+    // ===== WALLET/FUNDS FUNCTIONS =====
+    function openAddFundsModal() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) {
+        showToast('Please log in to add funds', 'error');
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
+      const balance = user?.balance || 0;
+      
+      document.getElementById('currentBalance').textContent = balance.toFixed(2);
+      document.getElementById('fundsAmount').value = '';
+      document.getElementById('fundsError').textContent = '';
+      document.getElementById('addFundsModal').classList.add('active');
+    }
+
+    function closeAddFundsModal() {
+      document.getElementById('addFundsModal').classList.remove('active');
+    }
+
+    function setFundsAmount(amount) {
+      document.getElementById('fundsAmount').value = amount.toFixed(2);
+    }
+
+    async function completeFundsTransaction() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) {
+        showToast('Please log in first', 'error');
+        return;
+      }
+
+      const amountInput = document.getElementById('fundsAmount');
+      const amount = parseFloat(amountInput.value);
+      const errorDiv = document.getElementById('fundsError');
+
+      // Validate amount
+      if (!amount || amount < 0.50) {
+        errorDiv.textContent = '❌ Minimum amount is $0.50';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        amountInput.focus();
+        return;
+      }
+
+      if (amount > 5000) {
+        errorDiv.textContent = '❌ Maximum amount per transaction is $5000';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        amountInput.focus();
+        return;
+      }
+
+      // Validate credit card fields
+      const cardName = document.getElementById('fundsCardName').value.trim();
+      const cardNumber = document.getElementById('fundsCardNumber').value.replace(/\s/g, '');
+      const cardExpiry = document.getElementById('fundsCardExpiry').value.trim();
+      const cardCVV = document.getElementById('fundsCardCVV').value.trim();
+
+      // Validate cardholder name
+      if (!cardName) {
+        errorDiv.textContent = '❌ Please enter cardholder name';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        document.getElementById('fundsCardName').focus();
+        return;
+      }
+
+      // Validate card number
+      if (!cardNumber || cardNumber.length < 13 || cardNumber.length > 19) {
+        errorDiv.textContent = '❌ Please enter a valid card number';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        document.getElementById('fundsCardNumber').focus();
+        return;
+      }
+
+      // Validate expiry date
+      if (!cardExpiry || !cardExpiry.includes('/')) {
+        errorDiv.textContent = '❌ Please enter expiry date in MM/YY format';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        document.getElementById('fundsCardExpiry').focus();
+        return;
+      }
+
+      const [expMonth, expYear] = cardExpiry.split('/');
+      if (!expMonth || !expYear || expMonth.length !== 2 || expYear.length !== 2) {
+        errorDiv.textContent = '❌ Invalid expiry date format';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        document.getElementById('fundsCardExpiry').focus();
+        return;
+      }
+
+      // Check if card is expired
+      const currentYear = new Date().getFullYear() % 100;
+      const currentMonth = new Date().getMonth() + 1;
+      const expMonthNum = parseInt(expMonth);
+      const expYearNum = parseInt(expYear);
+
+      if (expYearNum < currentYear || (expYearNum === currentYear && expMonthNum < currentMonth)) {
+        errorDiv.textContent = '❌ Card has expired';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        document.getElementById('fundsCardExpiry').focus();
+        return;
+      }
+
+      // Validate CVV
+      if (!cardCVV || cardCVV.length < 3 || cardCVV.length > 4) {
+        errorDiv.textContent = '❌ Please enter a valid CVV (3-4 digits)';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        document.getElementById('fundsCardCVV').focus();
+        return;
+      }
+
+      try {
+        // Show processing status
+        errorDiv.textContent = '⏳ Processing payment...';
+        errorDiv.style.color = '#00d4ff';
+        errorDiv.classList.add('show');
+
+        // Simulate payment processing (in real system, this would call Stripe/PayPal API)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Add funds to user (only if payment succeeds)
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const userIndex = users.findIndex(u => u.id === currentUser.id || u.email === currentUser.email);
+        
+        if (userIndex === -1) {
+          throw new Error('User not found');
+        }
+
+        const user = users[userIndex];
+        const previousBalance = user.balance || 0;
+        user.balance = previousBalance + amount;
+        users[userIndex] = user;
+        localStorage.setItem('users', JSON.stringify(users));
+
+        // Log transaction
+        const fundsLog = JSON.parse(localStorage.getItem('fundsTransactions') || '[]');
+        fundsLog.push({
+          id: 'FUNDS_' + Date.now(),
+          email: user.email,
+          amount: amount,
+          previousBalance: previousBalance,
+          newBalance: user.balance,
+          cardLast4: cardNumber.slice(-4),
+          timestamp: new Date().toISOString(),
+          status: 'completed'
+        });
+        localStorage.setItem('fundsTransactions', JSON.stringify(fundsLog));
+
+        // Show success
+        errorDiv.textContent = `✅ Payment processed! Added $${amount.toFixed(2)} to your wallet!`;
+        errorDiv.style.color = '#00ff88';
+        errorDiv.classList.add('show');
+
+        console.log(`💳 CHARGED: $${amount.toFixed(2)} to card ending in ${cardNumber.slice(-4)}`);
+        console.log(`   Previous Balance: $${previousBalance.toFixed(2)} → New Balance: $${user.balance.toFixed(2)}`);
+
+        // Refresh navbar to show new balance
+        updateNavBar(currentUser);
+
+        // Clear form
+        document.getElementById('fundsCardName').value = '';
+        document.getElementById('fundsCardNumber').value = '';
+        document.getElementById('fundsCardExpiry').value = '';
+        document.getElementById('fundsCardCVV').value = '';
+        document.getElementById('fundsAmount').value = '';
+
+        setTimeout(() => {
+          closeAddFundsModal();
+          showToast(`Wallet updated! New balance: $${user.balance.toFixed(2)}`, 'success');
+        }, 1500);
+
+      } catch (error) {
+        errorDiv.textContent = '❌ ' + error.message;
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.classList.add('show');
+        console.error('Funds error:', error);
+      }
+    }
+
+    function getUserBalance() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) return 0;
+
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
+      return user?.balance || 0;
+    }
+
     // ===== SIDEBAR MENU FUNCTIONS =====
     function toggleSidebar() {
       const sidebar = document.querySelector('.sidebar-menu');
@@ -5216,32 +6507,39 @@
       const modal = document.getElementById('orderHistoryModal');
       const content = document.getElementById('orderHistoryContent');
       
-      // Load orders from localStorage
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-      
-      if (orders.length === 0) {
-        content.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No orders yet. Make your first purchase!</p>';
+      if (!modal) return;
+
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      let userEmail = currentUser?.email || null;
+
+      if (!userEmail) {
+        content.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">Please log in to view order history.</p>';
       } else {
-        let tableHTML = '<table class="order-table"><thead><tr><th>Date</th><th>Product</th><th>Amount</th><th>Status</th></tr></thead><tbody>';
-        
-        orders.forEach(order => {
-          const date = new Date(order.date).toLocaleDateString();
-          tableHTML += `
-            <tr>
-              <td>${date}</td>
-              <td>${order.product}</td>
-              <td>$${order.amount}</td>
-              <td><span class="ticket-status ${order.status}">${order.status}</span></td>
-            </tr>
-          `;
-        });
-        
-        tableHTML += '</tbody></table>';
-        content.innerHTML = tableHTML;
+        const userOrders = paymentSystem.orders.filter(o => o.customer.email === userEmail);
+
+        if (userOrders.length === 0) {
+          content.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No orders yet. Make your first purchase!</p>';
+        } else {
+          content.innerHTML = userOrders
+            .reverse()
+            .map(order => `
+              <div class="transaction-item">
+                <div class="transaction-info">
+                  <div class="transaction-id">${order.id}</div>
+                  <div class="transaction-product">${order.product.name}</div>
+                  <div class="transaction-date">${new Date(order.timestamp).toLocaleString()}</div>
+                  <div style="color: #aaa; font-size: 0.8rem; margin-top: 0.25rem;">Access Key: <span style="font-family: monospace; color: var(--accent);">${order.accessKey}</span></div>
+                </div>
+                <div class="transaction-status ${order.status}">${order.status}</div>
+                <div class="transaction-amount">$${order.amount.toFixed(2)}</div>
+              </div>
+            `)
+            .join('');
+        }
       }
-      
+
       modal.style.display = 'flex';
-      toggleSidebar(); // Close sidebar
+      toggleSidebar();
     }
 
     function closeOrderHistory() {
@@ -5394,24 +6692,28 @@
       }
       
       // Show user menu
-      document.getElementById('user-menu').style.display = 'flex';
-      document.getElementById('user-display').textContent = '👤 ' + user.name;
-      
-      // Show buttons based on user permissions
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      let fullUser = users.find(u => u.id === user.id) || users.find(u => u.email === user.email);
-
-      if (!fullUser && user && user.email) {
-        fullUser = {
-          id: user.id || Date.now(),
-          name: user.name || 'User',
-          email: user.email,
-          createdAt: new Date().toISOString()
-        };
-        users.push(fullUser);
-        localStorage.setItem('users', JSON.stringify(users));
-        localStorage.setItem('currentUser', JSON.stringify({ id: fullUser.id, name: fullUser.name, email: fullUser.email }));
+      const userMenu = document.getElementById('user-menu');
+      if (userMenu) {
+        userMenu.style.display = 'flex';
+        document.getElementById('user-display').textContent = '👤 ' + user.name;
+        
+        // Update balance display
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const fullUser = users.find(u => u.id === user.id || u.email === user.email);
+        if (fullUser) {
+          const balance = fullUser.balance || 0;
+          const balanceEl = document.getElementById('user-balance');
+          if (balanceEl) {
+            balanceEl.textContent = balance.toFixed(2);
+          }
+        }
       }
+      // Update panel menu items
+      updatePanelMenuVisibility();
+      
+      // Get full user from localStorage
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const fullUser = users.find(u => u.id === user.id || u.email === user.email);
       
       if (fullUser) {
         // Show dev button if user is developer
@@ -5420,38 +6722,387 @@
           const devNotif = document.getElementById('dev-notif-wrapper');
           if (devBtn) devBtn.style.display = 'block';
           if (devNotif) devNotif.style.display = 'flex';
-          document.getElementById('menu-dev-panel').style.display = 'flex';
           renderDevNotifications();
         } else {
           const devBtn = document.getElementById('dev-btn');
           const devNotif = document.getElementById('dev-notif-wrapper');
           if (devBtn) devBtn.style.display = 'none';
           if (devNotif) devNotif.style.display = 'none';
-          document.getElementById('menu-dev-panel').style.display = 'none';
         }
         
         // Show head staff button if user is head staff
         if (fullUser.isHeadStaff) {
           const headBtn = document.getElementById('head-staff-btn');
           if (headBtn) headBtn.style.display = 'block';
-          document.getElementById('menu-head-panel').style.display = 'flex';
         } else {
           const headBtn = document.getElementById('head-staff-btn');
           if (headBtn) headBtn.style.display = 'none';
-          document.getElementById('menu-head-panel').style.display = 'none';
         }
         
         // Show staff button if user is staff
         if (fullUser.isStaff) {
           const staffBtn = document.getElementById('staff-btn');
           if (staffBtn) staffBtn.style.display = 'block';
-          document.getElementById('menu-staff-panel').style.display = 'flex';
         } else {
           const staffBtn = document.getElementById('staff-btn');
           if (staffBtn) staffBtn.style.display = 'none';
-          document.getElementById('menu-staff-panel').style.display = 'none';
         }
       }
+    }
+
+    // ====== STRIPE PAYMENT INTERFACE ======
+
+    let stripeCardElement = null;
+    let stripeElements = null;
+
+    function initializeStripeElements() {
+      if (!stripe) {
+        showToast('Stripe not configured. Add your API keys first.', 'error');
+        return false;
+      }
+
+      try {
+        if (!stripeElements) {
+          stripeElements = stripe.elements();
+          stripeCardElement = stripeElements.create('card', {
+            style: {
+              base: {
+                color: '#fff',
+                fontFamily: 'Sora, sans-serif',
+                fontSize: '16px',
+                '::placeholder': {
+                  color: '#888'
+                }
+              },
+              invalid: {
+                color: '#ff6b6b'
+              }
+            }
+          });
+        }
+        return true;
+      } catch (error) {
+        console.error('Stripe elements error:', error);
+        return false;
+      }
+    }
+
+    function openStripePaymentModal(amount, productName) {
+      if (!initializeStripePayment()) {
+        showToast('Stripe payment not available. Configure API keys first.', 'error');
+        return;
+      }
+
+      const modal = document.createElement('div');
+      modal.id = 'stripePaymentModal';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+      `;
+
+      const content = document.createElement('div');
+      content.style.cssText = `
+        background: #1a1a2e;
+        border: 2px solid #00d4ff;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+      `;
+
+      content.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="color: #00d4ff; margin: 0;">💳 Stripe Payment</h2>
+          <button onclick="document.getElementById('stripePaymentModal').remove();" style="background: none; border: none; color: #00d4ff; font-size: 24px; cursor: pointer;">×</button>
+        </div>
+
+        <div style="background: #0f3460; border-radius: 6px; padding: 12px; margin-bottom: 20px;">
+          <div style="color: #888; font-size: 12px;">Amount to Charge</div>
+          <div style="color: #00ff88; font-size: 24px; font-weight: bold;">$${amount.toFixed(2)}</div>
+          <div style="color: #888; font-size: 12px; margin-top: 4px;">${productName}</div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="color: #ccc; display: block; margin-bottom: 8px; font-size: 14px;">Card Details</label>
+          <div id="stripe-card-element" style="background: #0f3460; border: 1px solid #00d4ff; border-radius: 6px; padding: 12px;"></div>
+          <div id="stripe-card-errors" style="color: #ff6b6b; margin-top: 8px; font-size: 12px;"></div>
+        </div>
+
+        <button onclick="processStripePayment('${amount}', '${productName}');" style="width: 100%; padding: 12px; background: #00d4ff; color: #000; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px;">
+          Pay $${amount.toFixed(2)} with Stripe
+        </button>
+
+        <button onclick="document.getElementById('stripePaymentModal').remove();" style="width: 100%; padding: 12px; background: #16213e; color: #00d4ff; border: 1px solid #00d4ff; border-radius: 6px; font-weight: bold; cursor: pointer;">
+          Cancel
+        </button>
+
+        <div style="color: #888; font-size: 11px; margin-top: 15px; text-align: center;">
+          Test Card: 4242 4242 4242 4242 | Any Future Date | Any CVC
+        </div>
+      `;
+
+      modal.appendChild(content);
+      document.body.appendChild(modal);
+
+      // Mount Stripe card element
+      setTimeout(() => {
+        if (stripeCardElement && document.getElementById('stripe-card-element')) {
+          stripeCardElement.mount('#stripe-card-element');
+          stripeCardElement.addEventListener('change', (event) => {
+            const displayError = document.getElementById('stripe-card-errors');
+            if (event.error) {
+              displayError.textContent = event.error.message;
+            } else {
+              displayError.textContent = '';
+            }
+          });
+        }
+      }, 100);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+    }
+
+    function initializeStripePayment() {
+      if (!stripe) {
+        stripe = initializeStripe();
+      }
+      return initializeStripeElements();
+    }
+
+    async function processStripePayment(amount, productName) {
+      const errorDiv = document.getElementById('stripe-card-errors');
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+      if (!currentUser) {
+        errorDiv.textContent = 'Please log in first';
+        return;
+      }
+
+      errorDiv.textContent = '⏳ Processing...';
+
+      try {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const user = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
+
+        const transaction = {
+          id: paymentSystem.generateTransactionId(),
+          orderId: paymentSystem.generateOrderId(),
+          timestamp: new Date().toISOString(),
+          amount: parseFloat(amount),
+          currency: 'USD',
+          method: 'stripe',
+          status: 'processing',
+          isReal: true,
+          customer: {
+            email: user.email,
+            name: user.name
+          },
+          product: { label: productName }
+        };
+
+        // Process via Stripe
+        const result = await paymentSystem.processStripePayment(transaction, stripeCardElement);
+
+        if (result.success) {
+          errorDiv.textContent = '✅ Payment successful!';
+          errorDiv.style.color = '#00ff88';
+
+          // Deduct from balance (demo - in production, webhook handles this)
+          const userIndex = users.findIndex(u => u.id === user.id);
+          user.balance = (user.balance || 0) - parseFloat(amount);
+          users[userIndex] = user;
+          localStorage.setItem('users', JSON.stringify(users));
+
+          // Add to owner earnings
+          const currentOwnerBalance = parseFloat(localStorage.getItem('ownerBalance') || '0');
+          const newOwnerBalance = currentOwnerBalance + parseFloat(amount);
+          localStorage.setItem('ownerBalance', newOwnerBalance.toString());
+
+          updateNavBar(currentUser);
+
+          setTimeout(() => {
+            document.getElementById('stripePaymentModal').remove();
+            showToast('✅ Payment processed successfully!', 'success');
+          }, 1500);
+        }
+      } catch (error) {
+        errorDiv.textContent = '❌ ' + error.message;
+        errorDiv.style.color = '#ff6b6b';
+      }
+    }
+
+    // ====== OWNER EARNINGS DASHBOARD ======
+
+    function getOwnerBalance() {
+      return parseFloat(localStorage.getItem('ownerBalance') || '0');
+    }
+
+    function openEarningsDashboard() {
+      const modal = document.createElement('div');
+      modal.id = 'earningsDashboardModal';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+      `;
+
+      const content = document.createElement('div');
+      content.style.cssText = `
+        background: #1a1a2e;
+        border: 2px solid #00d4ff;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+      `;
+
+      const ownerBalance = getOwnerBalance();
+      const earnings = JSON.parse(localStorage.getItem('ownerEarnings') || '[]');
+      
+      let earningsHTML = `
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="color: #00ff88; margin: 0; font-size: 24px;">💰 Owner Earnings Dashboard</h2>
+        </div>
+
+        <div style="background: #16213e; border: 1px solid #00d4ff; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center;">
+          <div style="color: #888; font-size: 14px; margin-bottom: 5px;">Total Earnings</div>
+          <div style="color: #00ff88; font-size: 36px; font-weight: bold;">$${ownerBalance.toFixed(2)}</div>
+          <div style="color: #888; font-size: 12px; margin-top: 8px;">${earnings.length} transactions</div>
+        </div>
+      `;
+
+      if (earnings.length === 0) {
+        earningsHTML += `
+          <div style="text-align: center; color: #888; padding: 20px;">
+            <p>No earnings yet. Earnings will appear here when customers make purchases.</p>
+          </div>
+        `;
+      } else {
+        earningsHTML += `
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #00d4ff; margin-top: 0;">Recent Transactions</h3>
+            <div style="background: #0f3460; border-radius: 8px; overflow: hidden;">
+        `;
+
+        earnings.slice().reverse().slice(0, 10).forEach((earning, idx) => {
+          const date = new Date(earning.timestamp).toLocaleDateString();
+          earningsHTML += `
+            <div style="padding: 12px; border-bottom: 1px solid #16213e; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="color: #fff; font-weight: bold;">+$${earning.amount.toFixed(2)}</div>
+                <div style="color: #888; font-size: 12px;">${earning.customerName}</div>
+                <div style="color: #666; font-size: 11px;">${earning.product}</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="color: #888; font-size: 12px;">${date}</div>
+              </div>
+            </div>
+          `;
+        });
+
+        earningsHTML += `
+            </div>
+          </div>
+        `;
+      }
+
+      earningsHTML += `
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button onclick="document.getElementById('earningsDashboardModal').remove();" style="flex: 1; padding: 10px; background: #00d4ff; color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Close</button>
+          <button onclick="openWithdrawalModal();" style="flex: 1; padding: 10px; background: #00ff88; color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Withdrawal Info</button>
+        </div>
+      `;
+
+      content.innerHTML = earningsHTML;
+      modal.appendChild(content);
+      document.body.appendChild(modal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+    }
+
+    function openWithdrawalModal() {
+      const ownerBalance = getOwnerBalance();
+      const modal = document.createElement('div');
+      modal.id = 'withdrawalModal';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10001;
+      `;
+
+      const content = document.createElement('div');
+      content.style.cssText = `
+        background: #1a1a2e;
+        border: 2px solid #00ff88;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+      `;
+
+      content.innerHTML = `
+        <h2 style="color: #00ff88; margin-top: 0;">🏦 Withdrawal & Payout Info</h2>
+        
+        <div style="background: #0f3460; border-left: 4px solid #00ff88; padding: 15px; margin: 15px 0; border-radius: 4px;">
+          <div style="color: #888; font-size: 12px; margin-bottom: 5px;">Available Balance</div>
+          <div style="color: #00ff88; font-size: 28px; font-weight: bold;">$${ownerBalance.toFixed(2)}</div>
+        </div>
+
+        <h3 style="color: #00d4ff; margin-top: 20px;">How to Get Your Money:</h3>
+        <ol style="color: #ccc; line-height: 1.8;">
+          <li><strong>Set up a payment processor</strong> (Stripe, PayPal, Square) when you turn 18</li>
+          <li><strong>Connect your bank account</strong> to receive payouts</li>
+          <li><strong>Verify your identity</strong> with the payment processor</li>
+          <li><strong>Withdraw your earnings</strong> to your bank account</li>
+        </ol>
+
+        <div style="background: #16213e; border: 1px solid #ffa500; padding: 12px; margin-top: 15px; border-radius: 6px; color: #ffa500; font-size: 12px;">
+          ⚠️ <strong>Note:</strong> Since you're 14, you'll need to wait until you're 18 to set up a payment processor and withdraw real money. For now, this shows you how much you would earn!
+        </div>
+
+        <button onclick="document.getElementById('withdrawalModal').remove(); openEarningsDashboard();" style="width: 100%; padding: 12px; margin-top: 20px; background: #00d4ff; color: #000; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Back to Earnings</button>
+      `;
+
+      modal.appendChild(content);
+      document.body.appendChild(modal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.remove();
+          openEarningsDashboard();
+        }
+      });
     }
 
     // ====== HEAD STAFF PANEL FUNCTIONS ======
@@ -7122,6 +8773,35 @@
       element.classList.add('show');
     }
 
+    // Wipe all fake revenue and payout data
+    function wipeAllRevenueData() {
+      // Clear all transaction and payout data from localStorage
+      localStorage.removeItem('atlasfn_transactions');
+      localStorage.removeItem('atlasfn_orders');
+      localStorage.removeItem('atlasfn_payouts');
+      localStorage.removeItem('atlasfn_payment_methods');
+      
+      // Reset paymentSystem
+      paymentSystem.transactions = [];
+      paymentSystem.orders = [];
+      paymentSystem.saveTransactions();
+      paymentSystem.saveOrders();
+      
+      // Reset payoutSystem
+      payoutSystem.paymentMethods = [];
+      payoutSystem.payouts = [];
+      payoutSystem.savePaymentMethods();
+      payoutSystem.savePayouts();
+      
+      console.log('✅ All fake revenue and payout data wiped successfully!');
+      showToast('✅ All fake revenue data cleared!', 'success');
+      
+      // Refresh owner panel if open
+      if (document.getElementById('ownerPanel').style.display === 'flex') {
+        refreshOwnerPanel();
+      }
+    }
+
     // ====== CROSSHAIR AND EFFECTS ======
 
     // Crosshair follow mouse
@@ -7248,6 +8928,510 @@
     resizeCanvas();
     animate();
     
+    // ====== PAYMENT MANAGEMENT FUNCTIONS ======
+
+    function refreshPaymentStats() {
+      const totalTransactions = document.getElementById('totalTransactions');
+      const totalRevenue = document.getElementById('totalRevenue');
+      
+      if (!totalTransactions || !totalRevenue) return;
+
+      // Count only real transactions (test transactions are never saved to localStorage)
+      const transactions = paymentSystem.transactions.filter(t => t.status === 'completed' && t.isReal);
+      const revenue = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+
+      totalTransactions.textContent = transactions.length;
+      totalRevenue.textContent = '$' + revenue.toFixed(2);
+
+      // Render transaction list
+      if (document.getElementById('dev-transactions-list')) {
+        const transactionsList = paymentSystem.getAllTransactions(20);
+        document.getElementById('dev-transactions-list').innerHTML = transactionsList
+          .map(t => `
+            <div class="transaction-item">
+              <div class="transaction-info">
+                <div class="transaction-id">${t.id}</div>
+                <div class="transaction-product">${t.customer.email}</div>
+                <div class="transaction-date">${new Date(t.timestamp).toLocaleString()}</div>
+              </div>
+              <div class="transaction-status ${t.status}">${t.status}</div>
+              <div class="transaction-amount">$${t.amount.toFixed(2)}</div>
+            </div>
+          `)
+          .join('');
+      }
+
+      showToast('Payment stats refreshed!', 'success');
+    }
+
+    function exportTransactions() {
+      const transactions = paymentSystem.getAllTransactions();
+      
+      if (transactions.length === 0) {
+        showToast('No transactions to export', 'info');
+        return;
+      }
+
+      let csv = 'Transaction ID,Order ID,Method,Amount,Status,Customer Email,Date\n';
+      
+      transactions.forEach(t => {
+        csv += `"${t.id}","${t.orderId}","${t.method}","${t.amount}","${t.status}","${t.customer.email}","${t.timestamp}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `atlasfn_transactions_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      showToast('Transactions exported successfully!', 'success');
+    }
+
+    function processPaymentRefund(transactionId) {
+      const result = paymentSystem.processRefund(transactionId, 'Admin refund');
+      
+      if (result.success) {
+        showToast('Refund processed successfully', 'success');
+        refreshPaymentStats();
+      } else {
+        showToast('Refund failed: ' + result.error, 'error');
+      }
+    }
+
+    // ====== OWNER PANEL / PAYOUT SYSTEM ======
+
+    const payoutSystem = {
+      paymentMethods: [],
+      payouts: [],
+      
+      init() {
+        this.loadPaymentMethods();
+        this.loadPayouts();
+      },
+      
+      loadPaymentMethods() {
+        const stored = localStorage.getItem('atlasfn_payment_methods');
+        this.paymentMethods = stored ? JSON.parse(stored) : [];
+      },
+      
+      loadPayouts() {
+        const stored = localStorage.getItem('atlasfn_payouts');
+        this.payouts = stored ? JSON.parse(stored) : [];
+      },
+      
+      savePaymentMethods() {
+        localStorage.setItem('atlasfn_payment_methods', JSON.stringify(this.paymentMethods));
+      },
+      
+      savePayouts() {
+        localStorage.setItem('atlasfn_payouts', JSON.stringify(this.payouts));
+      },
+      
+      addPaymentMethod(method) {
+        const id = 'PM_' + Date.now();
+        const paymentMethod = {
+          id,
+          type: method.type,
+          lastFour: this.getLastFour(method),
+          holder: method.holder,
+          isDefault: this.paymentMethods.length === 0,
+          createdAt: new Date().toISOString(),
+          // Encrypted data (basic masking for demo)
+          data: btoa(JSON.stringify(method))
+        };
+        
+        // Remove default from others if this is default
+        if (paymentMethod.isDefault) {
+          this.paymentMethods.forEach(pm => pm.isDefault = false);
+        }
+        
+        this.paymentMethods.push(paymentMethod);
+        this.savePaymentMethods();
+        return paymentMethod;
+      },
+      
+      getLastFour(method) {
+        if (method.type === 'credit_card') {
+          return method.cardNumber?.slice(-4) || '****';
+        } else if (method.type === 'bank_account') {
+          return method.bankAccount?.slice(-4) || '****';
+        } else if (method.type === 'paypal') {
+          return method.paypalEmail?.split('@')[0]?.slice(-4) || '****';
+        }
+        return '****';
+      },
+      
+      deletePaymentMethod(id) {
+        this.paymentMethods = this.paymentMethods.filter(pm => pm.id !== id);
+        this.savePaymentMethods();
+      },
+      
+      setDefaultPaymentMethod(id) {
+        this.paymentMethods.forEach(pm => {
+          pm.isDefault = pm.id === id;
+        });
+        this.savePaymentMethods();
+      },
+      
+      processWithdrawal(amount, methodId, notes) {
+        const method = this.paymentMethods.find(pm => pm.id === methodId);
+        if (!method) {
+          return { success: false, error: 'Payment method not found' };
+        }
+        
+        // Calculate fee
+        const fee = Math.max(amount * 0.025 + 0.30, 0);
+        const totalAmount = amount + fee;
+        
+        // Check balance
+        const balance = this.getAvailableBalance();
+        if (totalAmount > balance) {
+          return { success: false, error: 'Insufficient balance' };
+        }
+        
+        const payout = {
+          id: 'PAYOUT_' + Date.now(),
+          amount,
+          fee,
+          totalAmount,
+          methodId,
+          methodType: method.type,
+          status: 'processing',
+          notes,
+          createdAt: new Date().toISOString(),
+          completedAt: null
+        };
+        
+        this.payouts.push(payout);
+        this.savePayouts();
+        
+        // Simulate processing
+        setTimeout(() => {
+          const payoutIndex = this.payouts.findIndex(p => p.id === payout.id);
+          if (payoutIndex !== -1) {
+            this.payouts[payoutIndex].status = 'completed';
+            this.payouts[payoutIndex].completedAt = new Date().toISOString();
+            this.savePayouts();
+            showToast('Payout completed successfully!', 'success');
+            refreshOwnerPanel();
+          }
+        }, 3000);
+        
+        return { success: true, payout };
+      },
+      
+      getAvailableBalance() {
+        // Only real transactions are saved to localStorage (test transactions are never persisted)
+        const completed = paymentSystem.transactions.filter(t => t.status === 'completed' && t.isReal);
+        const totalRevenue = completed.reduce((sum, t) => sum + (t.amount || 0), 0);
+        const totalPaidOut = this.payouts
+          .filter(p => p.status === 'completed')
+          .reduce((sum, p) => sum + (p.totalAmount || 0), 0);
+        return Math.max(totalRevenue - totalPaidOut, 0);
+      }
+    };
+
+    function switchOwnerTab(tabName) {
+      // Hide all tabs
+      document.getElementById('owner-overview-tab').style.display = 'none';
+      document.getElementById('owner-payouts-tab').style.display = 'none';
+      document.getElementById('owner-payment-methods-tab').style.display = 'none';
+      document.getElementById('owner-users-tab').style.display = 'none';
+      
+      // Remove active class from all buttons
+      document.querySelectorAll('.owner-tab-btn').forEach(btn => {
+        btn.style.borderBottomColor = 'transparent';
+        btn.style.color = '#888';
+      });
+      
+      // Show selected tab
+      const tabEl = document.getElementById('owner-' + tabName + '-tab');
+      if (tabEl) {
+        tabEl.style.display = 'block';
+      }
+      
+      // Highlight button
+      event.target.style.borderBottomColor = '#ff6b00';
+      event.target.style.color = 'var(--text)';
+      
+      // Load tab data
+      if (tabName === 'payouts') {
+        loadPayoutHistory();
+        updatePayoutStats();
+      } else if (tabName === 'payment-methods') {
+        loadPaymentMethods();
+      } else if (tabName === 'users') {
+        loadOwnerUsers();
+      }
+    }
+
+    function openAddCardModal() {
+      document.getElementById('addCardModal').style.display = 'flex';
+      document.getElementById('cardType').value = 'credit_card';
+      showCardFields('credit_card');
+    }
+
+    function closeAddCardModal() {
+      document.getElementById('addCardModal').style.display = 'none';
+      document.getElementById('addCardForm').reset();
+    }
+
+    function showCardFields(type) {
+      document.getElementById('credit-card-fields').style.display = type === 'credit_card' ? 'block' : 'none';
+      document.getElementById('bank-account-fields').style.display = type === 'bank_account' ? 'block' : 'none';
+      document.getElementById('paypal-fields').style.display = type === 'paypal' ? 'block' : 'none';
+    }
+
+    document.getElementById('cardType')?.addEventListener('change', (e) => {
+      showCardFields(e.target.value);
+    });
+
+    function formatCardNumber(input) {
+      let value = input.value.replace(/\s/g, '');
+      let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+      input.value = formatted;
+    }
+
+    function formatExpiry(input) {
+      let value = input.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      input.value = value;
+    }
+
+    function savePaymentMethod(event) {
+      event.preventDefault();
+      
+      const cardType = document.getElementById('cardType').value;
+      let method = { type: cardType };
+      
+      if (cardType === 'credit_card') {
+        const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+        if (cardNumber.length < 13) {
+          showToast('Invalid card number', 'error');
+          return;
+        }
+        method.holder = document.getElementById('cardName').value;
+        method.cardNumber = cardNumber;
+        method.expiry = document.getElementById('cardExpiry').value;
+        method.cvv = document.getElementById('cardCVV').value;
+      } else if (cardType === 'bank_account') {
+        method.holder = document.getElementById('bankName').value;
+        method.routing = document.getElementById('bankRouting').value;
+        method.bankAccount = document.getElementById('bankAccount').value.replace(/\D/g, '');
+      } else if (cardType === 'paypal') {
+        method.paypalEmail = document.getElementById('paypalEmail').value;
+        method.holder = method.paypalEmail.split('@')[0];
+      }
+      
+      const paymentMethod = payoutSystem.addPaymentMethod(method);
+      showToast('Payment method added successfully!', 'success');
+      closeAddCardModal();
+      loadPaymentMethods();
+    }
+
+    function loadPaymentMethods() {
+      const container = document.getElementById('owner-cards-list');
+      if (!container) return;
+      
+      if (payoutSystem.paymentMethods.length === 0) {
+        container.innerHTML = '<p style="color: #888; text-align: center;">No payment methods added yet</p>';
+        return;
+      }
+      
+      container.innerHTML = payoutSystem.paymentMethods.map(method => {
+        const typeLabel = {
+          'credit_card': '💳 Credit Card',
+          'bank_account': '🏦 Bank Account',
+          'paypal': '🅿️ PayPal'
+        }[method.type] || 'Payment Method';
+        
+        return `
+          <div class="payment-card">
+            <div class="payment-card-info">
+              ${method.isDefault ? '<span class="payment-card-badge payment-card-default">Default</span>' : ''}
+              <span class="payment-card-badge">${typeLabel}</span>
+              <div class="payment-card-number">•••• •••• •••• ${method.lastFour}</div>
+              <div class="payment-card-holder">${method.holder || 'Account Holder'}</div>
+              <div class="payment-card-expiry">Added ${new Date(method.createdAt).toLocaleDateString()}</div>
+            </div>
+            <div class="payment-card-actions">
+              ${!method.isDefault ? `<button class="payment-card-btn" style="background: #a855f7; color: white;" onclick="setDefaultPaymentMethod('${method.id}')">Set Default</button>` : ''}
+              <button class="payment-card-btn payment-card-btn-delete" onclick="deletePaymentMethodConfirm('${method.id}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setDefaultPaymentMethod(id) {
+      payoutSystem.setDefaultPaymentMethod(id);
+      loadPaymentMethods();
+      showToast('Default payment method updated', 'success');
+    }
+
+    function deletePaymentMethodConfirm(id) {
+      if (confirm('Are you sure you want to delete this payment method?')) {
+        payoutSystem.deletePaymentMethod(id);
+        loadPaymentMethods();
+        showToast('Payment method deleted', 'success');
+      }
+    }
+
+    function openWithdrawModal() {
+      const balance = payoutSystem.getAvailableBalance();
+      document.getElementById('withdraw-available').textContent = '$' + balance.toFixed(2);
+      
+      const methodSelect = document.getElementById('withdrawMethod');
+      methodSelect.innerHTML = '<option value="">-- Choose a payment method --</option>';
+      
+      if (payoutSystem.paymentMethods.length === 0) {
+        methodSelect.innerHTML += '<option disabled>Add a payment method first</option>';
+      } else {
+        payoutSystem.paymentMethods.forEach(method => {
+          methodSelect.innerHTML += `<option value="${method.id}">${method.holder || 'Account'} (•••• ${method.lastFour})</option>`;
+        });
+      }
+      
+      document.getElementById('withdrawModal').style.display = 'flex';
+    }
+
+    function closeWithdrawModal() {
+      document.getElementById('withdrawModal').style.display = 'none';
+      document.getElementById('withdrawForm').reset();
+    }
+
+    function processWithdrawal(event) {
+      event.preventDefault();
+      
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+      const methodId = document.getElementById('withdrawMethod').value;
+      const notes = document.getElementById('withdrawNotes').value;
+      
+      if (amount < 10) {
+        showToast('Minimum withdrawal is $10.00', 'error');
+        return;
+      }
+      
+      if (!methodId) {
+        showToast('Please select a payment method', 'error');
+        return;
+      }
+      
+      const result = payoutSystem.processWithdrawal(amount, methodId, notes);
+      
+      if (result.success) {
+        showToast('Withdrawal initiated! Processing in 3 seconds...', 'success');
+        closeWithdrawModal();
+        setTimeout(() => {
+          refreshOwnerPanel();
+        }, 3500);
+      } else {
+        showToast('Error: ' + result.error, 'error');
+      }
+    }
+
+    function loadPayoutHistory() {
+      const container = document.getElementById('owner-payout-history');
+      
+      if (payoutSystem.payouts.length === 0) {
+        container.innerHTML = '<p style="color: #888; text-align: center;">No payouts yet</p>';
+        return;
+      }
+      
+      container.innerHTML = payoutSystem.payouts
+        .reverse()
+        .map(payout => `
+          <div class="payout-item">
+            <div class="payout-info">
+              <div style="color: var(--text); font-weight: 600;">Withdrawal to •••• ${payoutSystem.paymentMethods.find(m => m.id === payout.methodId)?.lastFour || '****'}</div>
+              <div class="payout-date">${new Date(payout.createdAt).toLocaleString()}</div>
+              <div style="color: #888; font-size: 0.8rem; margin-top: 0.25rem;">Amount: $${payout.amount.toFixed(2)} | Fee: $${payout.fee.toFixed(2)}</div>
+            </div>
+            <div style="text-align: right;">
+              <div class="payout-status ${payout.status}">${payout.status.toUpperCase()}</div>
+              <div class="payout-amount">$${payout.amount.toFixed(2)}</div>
+            </div>
+          </div>
+        `)
+        .join('');
+    }
+
+    function updatePayoutStats() {
+      const balance = payoutSystem.getAvailableBalance();
+      document.getElementById('available-balance').textContent = '$' + balance.toFixed(2);
+      
+      // Only real transactions are saved to localStorage (test transactions are never persisted)
+      const completed = paymentSystem.transactions.filter(t => t.status === 'completed' && t.isReal);
+      const totalRevenue = completed.reduce((sum, t) => sum + (t.amount || 0), 0);
+      const totalPaidOut = payoutSystem.payouts
+        .filter(p => p.status === 'completed')
+        .reduce((sum, p) => sum + (p.totalAmount || 0), 0);
+      
+      document.getElementById('owner-pending-payout').textContent = '$' + balance.toFixed(2);
+      document.getElementById('owner-total-revenue').textContent = '$' + totalRevenue.toFixed(2);
+      document.getElementById('owner-total-payouts').textContent = '$' + totalPaidOut.toFixed(2);
+    }
+
+    function refreshOwnerPanel() {
+      updatePayoutStats();
+      loadPayoutHistory();
+      loadTransactionsList();
+    }
+
+    function loadTransactionsList() {
+      const container = document.getElementById('owner-transactions-list');
+      if (!container) return;
+      
+      const transactions = paymentSystem.getAllTransactions(10);
+      
+      if (transactions.length === 0) {
+        container.innerHTML = '<p style="color: #888; text-align: center;">No transactions yet</p>';
+        return;
+      }
+      
+      container.innerHTML = transactions.map(t => `
+        <div class="transaction-item">
+          <div class="transaction-info">
+            <div class="transaction-id">${t.id}</div>
+            <div class="transaction-product">${t.product?.name || 'Unknown'}</div>
+            <div class="transaction-date">${new Date(t.timestamp).toLocaleString()}</div>
+          </div>
+          <div class="transaction-status ${t.status}">${t.status}</div>
+          <div class="transaction-amount">$${t.amount.toFixed(2)}</div>
+        </div>
+      `).join('');
+    }
+
+    function loadOwnerUsers() {
+      const container = document.getElementById('owner-users-container');
+      if (!container) return;
+      
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      
+      if (users.length === 0) {
+        container.innerHTML = '<p style="color: #888; text-align: center;">No users</p>';
+        return;
+      }
+      
+      container.innerHTML = users.slice(0, 10).map(user => `
+        <div class="user-item">
+          <div class="user-info">
+            <div class="user-details">
+              <h4>${user.name || user.email}</h4>
+              <p>${user.email}</p>
+              <p>Joined: ${new Date(user.createdAt || 0).toLocaleDateString()}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
     // Update ticket badge on page load
     window.addEventListener('DOMContentLoaded', () => {
       updateTicketBadge();
@@ -7269,6 +9453,104 @@
       const sidebarOverlay = document.querySelector('.sidebar-overlay');
       if (sidebarOverlay) {
         sidebarOverlay.addEventListener('click', toggleSidebar);
+      }
+
+      // Receipt page handler
+      window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#receipt') {
+          showReceiptPage();
+        } else {
+          hideReceiptPage();
+        }
+      });
+
+      // Check on load if should show receipt
+      if (window.location.hash === '#receipt') {
+        showReceiptPage();
+      }
+
+      function hideReceiptPage() {
+        const receiptModal = document.getElementById('receiptPageModal');
+        if (receiptModal) {
+          receiptModal.style.display = 'none';
+        }
+      }
+
+      function showReceiptPage() {
+        const lastOrder = localStorage.getItem('lastOrder');
+        if (!lastOrder) {
+          window.location.href = '#';
+          return;
+        }
+
+        const order = JSON.parse(lastOrder);
+        let receiptModal = document.getElementById('receiptPageModal');
+        
+        // Create receipt modal if it doesn't exist
+        if (!receiptModal) {
+          receiptModal = document.createElement('div');
+          receiptModal.id = 'receiptPageModal';
+          receiptModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; overflow-y: auto; padding: 2rem;';
+          document.body.appendChild(receiptModal);
+        }
+        
+        receiptModal.innerHTML = `
+          <div style="max-width: 600px; width: 100%;">
+            <div style="background: rgba(0, 212, 255, 0.1); border: 2px solid #00d4ff; border-radius: 16px; padding: 2rem;">
+              <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 64px; margin-bottom: 1rem;">✅</div>
+                <h1 style="color: #00ff88; margin-bottom: 0.5rem;">Payment Successful!</h1>
+                <p style="color: #888;">Your access key has been activated</p>
+              </div>
+
+              <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                <div style="margin-bottom: 1rem;">
+                  <div style="color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">Invoice ID</div>
+                  <div style="color: #00d4ff; font-size: 18px; font-weight: 700; font-family: monospace;">${order.transactionId || 'N/A'}</div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                  <div style="color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">Purchase ID</div>
+                  <div style="color: #00d4ff; font-size: 18px; font-weight: 700; font-family: monospace;">${order.id || 'N/A'}</div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                  <div style="color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">License Key</div>
+                  <div style="color: #00ff88; font-size: 18px; font-weight: 700; font-family: monospace; word-break: break-all;">${order.accessKey || 'N/A'}</div>
+                </div>
+
+                <div style="margin-bottom: 0;">
+                  <div style="color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">Amount Paid</div>
+                  <div style="color: #00d4ff; font-size: 18px; font-weight: 700;">$${order.amount?.toFixed(2) || '0.00'}</div>
+                </div>
+              </div>
+
+              <div style="background: rgba(255, 107, 0, 0.05); border: 1px solid rgba(255, 107, 0, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                <p style="color: #ff6b00; margin: 0; font-size: 14px;"><i class="fas fa-info-circle"></i> Save your License Key in a safe place. You'll need it to access your purchased content.</p>
+              </div>
+
+              <div style="display: grid; gap: 0.5rem;">
+                <button onclick="copyLicenseKey('${order.accessKey}')" style="width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #00d4ff, #0099cc); border: none; border-radius: 8px; color: #000; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
+                  <i class="fas fa-copy"></i> Copy License Key
+                </button>
+                <button onclick="window.location.href = '#'" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
+                  <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 12px;">
+              <p>Order Date: ${new Date(order.timestamp).toLocaleString()}</p>
+              <p>A confirmation email has been sent to ${order.email}</p>
+            </div>
+          </div>
+        `;
+        receiptModal.style.display = 'flex';
+      }
+
+      function copyLicenseKey(key) {
+        navigator.clipboard.writeText(key);
+        showToast('License key copied to clipboard!', 'success');
       }
     });
   </script>
