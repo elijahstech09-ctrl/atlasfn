@@ -1,0 +1,70 @@
+// Supabase Signup API
+const { createClient } = require('@supabase/supabase-js');
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
+
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Create auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username: username
+        }
+      }
+    });
+
+    if (authError) {
+      return res.status(400).json({ error: authError.message });
+    }
+
+    // Create user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('users')
+      .insert([
+        {
+          id: authData.user.id,
+          username,
+          email,
+          balance: 0,
+          role: 'customer',
+          created_at: new Date().toISOString()
+        }
+      ])
+      .select()
+      .single();
+
+    if (profileError) {
+      return res.status(400).json({ error: profileError.message });
+    }
+
+    res.status(200).json({
+      user: {
+        id: profile.id,
+        username: profile.username,
+        email: profile.email,
+        balance: profile.balance,
+        role: profile.role
+      },
+      session: authData.session
+    });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ error: 'Signup failed' });
+  }
+};

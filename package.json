@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Atlas FN - Fortnite Access Key Store",
   "dependencies": {
-    "stripe": "^14.14.0"
+    "stripe": "^14.14.0",
+    "@supabase/supabase-js": "^2.39.0"
   }
 }

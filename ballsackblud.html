@@ -6173,41 +6173,46 @@ For support, contact: support@atlasfn.com
         return;
       }
 
-      // Check if email already exists
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      if (users.some(u => u.email === email)) {
-        showError(errorDiv, 'Email is already registered');
-        return;
+      try {
+        // Call signup API
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: name || 'User',
+            email: email,
+            password: password
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          showError(errorDiv, data.error || 'Signup failed');
+          return;
+        }
+
+        // Store session token
+        localStorage.setItem('authToken', data.session.access_token);
+        localStorage.setItem('currentUser', JSON.stringify({ 
+          id: data.user.id, 
+          name: data.user.username, 
+          email: data.user.email 
+        }));
+
+        // Reset form and close modal
+        document.getElementById('signupName').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupConfirm').value = '';
+        closeModal('signupModal');
+
+        updateNavBar({ name: data.user.username });
+        showToast('Account created successfully! Welcome!', 'success');
+      } catch (error) {
+        console.error('Signup error:', error);
+        showError(errorDiv, 'An error occurred. Please try again.');
       }
-
-      // Hash password before storing
-      const hashedPassword = await hashPassword(password);
-
-      // Create new user
-      const newUser = {
-        id: Date.now(),
-        name: name || 'User',
-        email: email,
-        password: hashedPassword,
-        balance: 0,
-        createdAt: new Date().toISOString()
-      };
-
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      localStorage.setItem('currentUser', JSON.stringify({ id: newUser.id, name: newUser.name, email: newUser.email }));
-
-      // Reset form and close modal
-      document.getElementById('signupName').value = '';
-      document.getElementById('signupEmail').value = '';
-      document.getElementById('signupPassword').value = '';
-      document.getElementById('signupConfirm').value = '';
-      closeModal('signupModal');
-
-      updateNavBar({ name: newUser.name });
-      showToast('Account created successfully! Welcome!', 'success');
-      
-      // Landing page disabled - no need to hide
     }
 
     // Handle login
@@ -6235,49 +6240,52 @@ For support, contact: support@atlasfn.com
         return;
       }
 
-      // Hash password to compare
-      const hashedPassword = await hashPassword(password);
+      try {
+        // Call login API
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        });
 
-      // Find user
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.email === email && u.password === hashedPassword);
+        const data = await response.json();
 
-      if (!user) {
-        showError(errorDiv, 'Email or password is incorrect');
-        return;
+        if (!response.ok) {
+          showError(errorDiv, data.error || 'Login failed');
+          return;
+        }
+
+        // Store session token
+        localStorage.setItem('authToken', data.session.access_token);
+        localStorage.setItem('currentUser', JSON.stringify({ 
+          id: data.user.id, 
+          name: data.user.username, 
+          email: data.user.email 
+        }));
+
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        closeModal('loginModal');
+
+        // Reset rate limit on successful login
+        delete loginAttempts[email];
+
+        updateNavBar({ name: data.user.username });
+        showToast('Logged in successfully! Welcome back, ' + data.user.username + '!', 'success');
+      } catch (error) {
+        console.error('Login error:', error);
+        showError(errorDiv, 'An error occurred. Please try again.');
       }
-
-      // Check if user is restricted before allowing login
-      if (user.blacklisted) {
-        showError(errorDiv, 'This account has been blacklisted. Access denied.');
-        return;
-      }
-
-      if (user.timeoutUntil && new Date(user.timeoutUntil) > new Date()) {
-        const timeLeft = Math.ceil((new Date(user.timeoutUntil) - new Date()) / 60000);
-        showError(errorDiv, `This account is timed out. Access will be restored in ${timeLeft} minutes.`);
-        return;
-      }
-
-      // Login successful
-      localStorage.setItem('currentUser', JSON.stringify({ id: user.id, name: user.name, email: user.email }));
-      document.getElementById('loginEmail').value = '';
-      document.getElementById('loginPassword').value = '';
-      closeModal('loginModal');
-
-      // Reset rate limit on successful login
-      delete loginAttempts[email];
-
-      updateNavBar({ name: user.name });
-      showToast('Logged in successfully! Welcome back, ' + user.name + '!', 'success');
-      
-      // Landing page disabled - no need to hide
     }
 
     // Logout
     function logout() {
       exitTestMode(true);
       localStorage.removeItem('currentUser');
+      localStorage.removeItem('authToken');
       
       // Show login/signup buttons
       const navAuth = document.getElementById('nav-auth');
