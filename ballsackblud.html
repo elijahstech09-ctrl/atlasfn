@@ -4375,11 +4375,8 @@
     
     // Check if user is developer
     function isDevUser() {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-      if (!currentUser) return false;
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
-      return user && user.isDev;
+      const flags = getCurrentUserFlags();
+      return !!flags.isDev;
     }
     
     // Update test purchase option visibility
@@ -5282,6 +5279,124 @@ For support, contact: support@atlasfn.com
       return div.innerHTML;
     }
 
+    function getCurrentUserProfile() {
+      return JSON.parse(localStorage.getItem('currentUserProfile') || 'null');
+    }
+
+    function saveCurrentUserProfile(profile) {
+      localStorage.setItem('currentUserProfile', JSON.stringify(profile));
+    }
+
+    function clearCurrentUserProfile() {
+      localStorage.removeItem('currentUserProfile');
+    }
+
+    function getRoleFlags(profile) {
+      const permissions = Array.isArray(profile && profile.permissions) ? profile.permissions : [];
+      const role = profile && profile.role ? profile.role : '';
+      const isDev = role === 'dev' || permissions.includes('dev');
+      const isHeadStaff = role === 'head_staff' || permissions.includes('head_staff');
+      const isStaff = role === 'staff' || permissions.includes('staff') || isHeadStaff || isDev;
+      return { isDev, isStaff, isHeadStaff };
+    }
+
+    function getCurrentUserFlags() {
+      const profile = getCurrentUserProfile();
+      if (profile) {
+        return getRoleFlags(profile);
+      }
+
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!currentUser) {
+        return { isDev: false, isStaff: false, isHeadStaff: false };
+      }
+
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const fullUser = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
+      return {
+        isDev: !!(fullUser && fullUser.isDev),
+        isStaff: !!(fullUser && fullUser.isStaff),
+        isHeadStaff: !!(fullUser && fullUser.isHeadStaff)
+      };
+    }
+
+    function syncCurrentUserToLocal(profile) {
+      if (!profile) return;
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const flags = getRoleFlags(profile);
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!currentUser) return;
+
+      const userIndex = users.findIndex(u => u.id === currentUser.id || u.email === currentUser.email);
+      const updated = {
+        id: currentUser.id,
+        name: profile.username || currentUser.name || 'User',
+        email: profile.email || currentUser.email,
+        createdAt: profile.created_at || new Date().toISOString(),
+        isDev: flags.isDev,
+        isStaff: flags.isStaff,
+        isHeadStaff: flags.isHeadStaff
+      };
+
+      if (userIndex === -1) {
+        users.push(updated);
+      } else {
+        users[userIndex] = { ...users[userIndex], ...updated };
+      }
+
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function buildProfileUpdatesFromFlags(flags) {
+      const permissions = [];
+      if (flags.isStaff) permissions.push('staff');
+      if (flags.isHeadStaff) permissions.push('head_staff');
+      if (flags.isDev) permissions.push('dev');
+
+      let role = 'customer';
+      if (flags.isDev) {
+        role = 'dev';
+      } else if (flags.isHeadStaff) {
+        role = 'head_staff';
+      } else if (flags.isStaff) {
+        role = 'staff';
+      }
+
+      return { role, permissions };
+    }
+
+    async function updateCurrentUserProfileOnServer(updates) {
+      const token = localStorage.getItem('authToken');
+      if (!token) return false;
+
+      try {
+        const response = await fetch('/api/auth/user', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(updates)
+        });
+
+        if (!response.ok) {
+          return false;
+        }
+
+        const data = await response.json();
+        if (data && data.user) {
+          saveCurrentUserProfile(data.user);
+          syncCurrentUserToLocal(data.user);
+          updatePanelMenuVisibility();
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Profile update error:', error);
+        return false;
+      }
+    }
+
     let actionModalHandler = null;
     let banRequestTarget = null;
     let focusedBanRequestId = null;
@@ -5769,16 +5884,12 @@ For support, contact: support@atlasfn.com
         return;
       }
 
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const fullUser = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
-
-      if (fullUser) {
-        document.getElementById('menu-dev-panel').style.display = fullUser.isDev ? 'flex' : 'none';
-        document.getElementById('menu-head-panel').style.display = fullUser.isHeadStaff ? 'flex' : 'none';
-        document.getElementById('menu-staff-panel').style.display = fullUser.isStaff ? 'flex' : 'none';
-        document.getElementById('menu-owner-panel').style.display = (fullUser.isDev && fullUser.email === 'elijahstech09@gmail.com') ? 'flex' : 'none';
-        console.log('📋 Panel Menu Updated:', { isDev: fullUser.isDev, isStaff: fullUser.isStaff, isHeadStaff: fullUser.isHeadStaff });
-      }
+      const flags = getCurrentUserFlags();
+      document.getElementById('menu-dev-panel').style.display = flags.isDev ? 'flex' : 'none';
+      document.getElementById('menu-head-panel').style.display = flags.isHeadStaff ? 'flex' : 'none';
+      document.getElementById('menu-staff-panel').style.display = flags.isStaff ? 'flex' : 'none';
+      document.getElementById('menu-owner-panel').style.display = (flags.isDev && currentUser.email === 'elijahstech09@gmail.com') ? 'flex' : 'none';
+      console.log('📋 Panel Menu Updated:', { isDev: flags.isDev, isStaff: flags.isStaff, isHeadStaff: flags.isHeadStaff });
     }
 
     // Initialize default dev account
@@ -5880,10 +5991,13 @@ For support, contact: support@atlasfn.com
 
     function openStaffPanel() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id);
+      if (!currentUser) {
+        showToast('Access denied. Staff privileges required.', 'error');
+        return;
+      }
 
-      if (!user || !user.isStaff) {
+      const flags = getCurrentUserFlags();
+      if (!flags.isStaff) {
         showToast('Access denied. Staff privileges required.', 'error');
         return;
       }
@@ -6217,6 +6331,8 @@ For support, contact: support@atlasfn.com
             name: data.user.username, 
             email: data.user.email 
           }));
+          saveCurrentUserProfile(data.user);
+          syncCurrentUserToLocal(data.user);
         }
 
         // Reset form and close modal
@@ -6288,6 +6404,8 @@ For support, contact: support@atlasfn.com
           name: data.user.username, 
           email: data.user.email 
         }));
+        saveCurrentUserProfile(data.user);
+        syncCurrentUserToLocal(data.user);
 
         document.getElementById('loginEmail').value = '';
         document.getElementById('loginPassword').value = '';
@@ -6308,6 +6426,7 @@ For support, contact: support@atlasfn.com
     function logout() {
       localStorage.removeItem('currentUser');
       localStorage.removeItem('authToken');
+      clearCurrentUserProfile();
       
       // Show login/signup buttons
       const navAuth = document.getElementById('nav-auth');
@@ -7152,10 +7271,13 @@ For support, contact: support@atlasfn.com
 
     function openHeadStaffPanel() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id);
+      if (!currentUser) {
+        showToast('Access denied. Head Staff privileges required.', 'error');
+        return;
+      }
 
-      if (!user || !user.isHeadStaff) {
+      const flags = getCurrentUserFlags();
+      if (!flags.isHeadStaff) {
         showToast('Access denied. Head Staff privileges required.', 'error');
         return;
       }
@@ -7465,10 +7587,13 @@ For support, contact: support@atlasfn.com
 
     function openDevPanel() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id);
+      if (!currentUser) {
+        showToast('Access denied. Developer privileges required.', 'error');
+        return;
+      }
 
-      if (!user || !user.isDev) {
+      const flags = getCurrentUserFlags();
+      if (!flags.isDev) {
         showToast('Access denied. Developer privileges required.', 'error');
         return;
       }
@@ -7878,6 +8003,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Staff access granted.', 'success');
@@ -7908,6 +8038,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Staff access revoked.', 'success');
@@ -7938,6 +8073,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Head Staff access granted.', 'success');
@@ -7968,6 +8108,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Head Staff access revoked.', 'success');
@@ -8000,6 +8145,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'All panels access granted.', 'success');
@@ -8038,6 +8188,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === users[userIndex].id) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           if (emailInput) emailInput.value = '';
@@ -8070,6 +8225,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Developer access granted.', 'success');
@@ -8107,6 +8267,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Developer access revoked.', 'success');

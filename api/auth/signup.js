@@ -79,7 +79,8 @@ module.exports = async (req, res) => {
         username: profile.username,
         email: profile.email,
         balance: profile.balance,
-        role: profile.role
+        role: profile.role,
+        permissions: profile.permissions || []
       },
       session: authData.session || null
     });
