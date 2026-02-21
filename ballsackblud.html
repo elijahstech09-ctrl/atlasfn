@@ -5156,6 +5156,11 @@ For support, contact: support@atlasfn.com
         
         // Show staff ticket tab if applicable
         checkStaffAccess();
+        
+        // Open panel in new tab
+        setTimeout(() => {
+          window.open('panel.html', '_blank');
+        }, 1000);
       } else {
         errorEl.textContent = 'Invalid or inactive key';
         errorEl.style.display = 'block';

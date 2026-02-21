@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas Control Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #313338;
+      color: #dbdee1;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .panel-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: #1e1f22;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      border-bottom: 1px solid #000;
+      z-index: 100;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hamburger {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 100%;
+      height: 2px;
+      background: #b5bac1;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f2f3f5;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .top-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #b5bac1;
+      transition: color 0.2s;
+    }
+
+    .top-icon:hover {
+      color: #dbdee1;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #2b2d31;
+      padding-top: 48px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #1e1f22;
+    }
+
+    .user-info {
+      padding: 1.5rem;
+      border-bottom: 1px solid #1e1f22;
+    }
+
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5865f2, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .user-details h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f2f3f5;
+      margin-bottom: 0.125rem;
+    }
+
+    .user-tag {
+      font-size: 0.875rem;
+      color: #b5bac1;
+    }
+
+    .user-role {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: rgba(88, 101, 242, 0.15);
+      color: #5865f2;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    .user-id {
+      font-size: 0.75rem;
+      color: #949ba4;
+      margin-top: 0.5rem;
+    }
+
+    .sidebar-actions {
+      padding: 0.5rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: #b5bac1;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.125rem;
+      transition: all 0.15s;
+      text-align: left;
+    }
+
+    .action-btn i {
+      width: 20px;
+      font-size: 1.125rem;
+    }
+
+    .action-btn:hover {
+      background: #404249;
+      color: #dbdee1;
+    }
+
+    .action-btn.active {
+      background: #404249;
+      color: #f2f3f5;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding-top: 48px;
+      height: 100vh;
+      overflow-y: auto;
+      background: #313338;
+    }
+
+    .content-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #1e1f22;
+      background: #2b2d31;
+    }
+
+    .content-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f2f3f5;
+      margin-bottom: 0.5rem;
+    }
+
+    .content-header p {
+      font-size: 0.875rem;
+      color: #b5bac1;
+    }
+
+    .activity-log {
+      padding: 1rem;
+    }
+
+    .log-item {
+      background: #2b2d31;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      transition: background 0.15s;
+    }
+
+    .log-item:hover {
+      background: #1e1f22;
+    }
+
+    .log-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .log-icon.joined { background: rgba(35, 165, 90, 0.15); color: #23a55a; }
+    .log-icon.left { background: rgba(242, 63, 67, 0.15); color: #f23f43; }
+    .log-icon.kicked { background: rgba(250, 166, 26, 0.15); color: #faa61a; }
+    .log-icon.chatted { background: rgba(88, 101, 242, 0.15); color: #5865f2; }
+    .log-icon.reset { background: rgba(148, 155, 164, 0.15); color: #949ba4; }
+
+    .log-content {
+      flex: 1;
+    }
+
+    .log-action {
+      font-size: 0.875rem;
+      color: #f2f3f5;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .log-time {
+      font-size: 0.75rem;
+      color: #949ba4;
+    }
+
+    .log-user {
+      color: #00a8fc;
+      font-weight: 600;
+    }
+
+    /* Right Panel */
+    .right-panel {
+      width: 300px;
+      background: #2b2d31;
+      padding-top: 48px;
+      height: 100vh;
+      overflow-y: auto;
+      border-left: 1px solid #1e1f22;
+    }
+
+    .right-panel-section {
+      padding: 1rem;
+      border-bottom: 1px solid #1e1f22;
+    }
+
+    .right-panel-section h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #b5bac1;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+
+    .user-list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 0.25rem;
+    }
+
+    .user-list-item:hover {
+      background: #313338;
+    }
+
+    .user-mini-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5865f2, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #fff;
+      position: relative;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #23a55a;
+      border: 2px solid #2b2d31;
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+    }
+
+    .user-mini-name {
+      font-size: 0.875rem;
+      color: #dbdee1;
+      font-weight: 500;
+    }
+
+    .user-mini-role {
+      font-size: 0.75rem;
+      color: #949ba4;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #2b2d31;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #1e1f22;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #404249;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span class="panel-title">Admin Panel</span>
+    </div>
+    <div class="top-bar-right">
+      <div class="top-icon" title="Search"><i class="fas fa-search"></i></div>
+      <div class="top-icon" title="Minimize"><i class="fas fa-minus"></i></div>
+      <div class="top-icon" title="Close"><i class="fas fa-times"></i></div>
+    </div>
+  </div>
+
+  <div class="panel-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="user-info">
+        <div class="user-header">
+          <div class="user-avatar">A</div>
+          <div class="user-details">
+            <h3>Admin</h3>
+            <span class="user-tag">@admin</span>
+          </div>
+        </div>
+        <span class="user-role">ADMINISTRATOR</span>
+        <div class="user-id">ID: 1883128632</div>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="action-btn active">
+          <i class="fas fa-ban"></i>
+          <span>Ban</span>
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-cog"></i>
+          <span>Configure</span>
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-shoe-prints"></i>
+          <span>Kick</span>
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-volume-mute"></i>
+          <span>Mute</span>
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-bell"></i>
+          <span>Notify</span>
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-ellipsis-h"></i>
+          <span>View More</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="content-header">
+        <h2>Activity Log</h2>
+        <p>Recent events and actions</p>
+      </div>
+
+      <div class="activity-log" id="activityLog">
+        <div class="log-item">
+          <div class="log-icon joined"><i class="fas fa-arrow-right"></i></div>
+          <div class="log-content">
+            <div class="log-action">Joined</div>
+            <div class="log-time">2 minutes ago</div>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-icon chatted"><i class="fas fa-comment"></i></div>
+          <div class="log-content">
+            <div class="log-action">Chatted "Hello!"</div>
+            <div class="log-time">5 minutes ago</div>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-icon kicked"><i class="fas fa-door-open"></i></div>
+          <div class="log-content">
+            <div class="log-action">Kicked</div>
+            <div class="log-time">10 minutes ago</div>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-icon joined"><i class="fas fa-arrow-right"></i></div>
+          <div class="log-content">
+            <div class="log-action">Joined</div>
+            <div class="log-time">15 minutes ago</div>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-icon left"><i class="fas fa-arrow-left"></i></div>
+          <div class="log-content">
+            <div class="log-action">Left</div>
+            <div class="log-time">20 minutes ago</div>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-icon reset"><i class="fas fa-redo"></i></div>
+          <div class="log-content">
+            <div class="log-action">Character Reset</div>
+            <div class="log-time">25 minutes ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="right-panel-section">
+        <h3>Online Users</h3>
+        <div class="user-list-item">
+          <div class="user-mini-avatar">
+            T
+            <div class="status-indicator"></div>
+          </div>
+          <div>
+            <div class="user-mini-name">toast</div>
+            <div class="user-mini-role">Guest</div>
+          </div>
+        </div>
+        <div class="user-list-item">
+          <div class="user-mini-avatar">
+            G
+            <div class="status-indicator"></div>
+          </div>
+          <div>
+            <div class="user-mini-name">GreenSlayer_YT</div>
+            <div class="user-mini-role">Member</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel-section">
+        <h3>Recent Actions</h3>
+        <div style="font-size: 0.875rem; color: #949ba4; padding: 0.5rem;">
+          <div style="margin-bottom: 0.5rem;"><span class="log-user">toast</span> joined the server</div>
+          <div style="margin-bottom: 0.5rem;"><span class="log-user">Admin</span> kicked user</div>
+          <div><span class="log-user">GreenSlayer_YT</span> sent a message</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load panel based on user's redeemed key
+    const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+    
+    if (!userKey) {
+      // No key redeemed, redirect back
+      alert('Please redeem a panel key first');
+      window.location.href = 'ballsackblud.html';
+    } else {
+      // Update panel title and role based on key type
+      document.querySelector('.panel-title').textContent = userKey.panel || 'Control Panel';
+      document.querySelector('.user-role').textContent = userKey.type.toUpperCase();
+      document.querySelector('.user-details h3').textContent = userKey.type.charAt(0).toUpperCase() + userKey.type.slice(1);
+      document.querySelector('.user-tag').textContent = '@' + userKey.type;
+      
+      // Update avatar letter
+      document.querySelector('.user-avatar').textContent = userKey.type.charAt(0).toUpperCase();
+    }
+
+    // Action button handlers
+    document.querySelectorAll('.action-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const action = this.querySelector('span').textContent;
+        console.log('Action clicked:', action);
+        // Add your action logic here
+      });
+    });
+  </script>
+</body>
+</html>
