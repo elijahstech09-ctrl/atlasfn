@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signup Disabled</title>
+  <title>Owner Access</title>
   <style>
     :root {
       color-scheme: light;
@@ -33,24 +33,47 @@
       font-size: 24px;
     }
     p {
-      margin: 0 0 16px 0;
+      margin: 0 0 20px 0;
       line-height: 1.5;
       color: #cbd5f5;
     }
     a {
       color: #7dd3fc;
       text-decoration: none;
+      font-weight: 600;
     }
     a:hover {
       text-decoration: underline;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #a855f7, #d946ef);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .button:hover {
+      text-decoration: none;
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Signup is disabled</h1>
-    <p>This site no longer uses accounts. You can continue to browse and purchase without signing up.</p>
-    <p><a href="ballsackblud.html">Return to the homepage</a></p>
+    <h1>👑 Owner Access</h1>
+    <p>Access the owner control panel to generate and manage access keys for all panels and administrators.</p>
+    <p style="font-size: 0.95rem; color: #a0a0a0;">Log in to the main site and use the "Owner Access" button in the header, or enter your credentials here.</p>
+    <a href="ballsackblud.html" class="button">Go to Main Site</a>
   </div>
+
+  <script>
+    // Redirect to main page on load (optional, gives user a moment to read)
+    // setTimeout(() => {
+    //   window.location.href = 'ballsackblud.html';
+    // }, 3000);
+  </script>
 </body>
 </html>

@@ -3280,6 +3280,9 @@
         <a href="https://discord.gg/Y6jVxPVV" target="_blank" title="Join our Discord">
           <i class="fab fa-discord"></i> Discord
         </a>
+        <button onclick="openAccessModal()" style="background: linear-gradient(135deg, #a855f7, #d946ef); border: none; padding: 0.8rem 1.5rem; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.95rem;">
+          <i class="fas fa-key"></i> Owner Access
+        </button>
       </div>
     </nav>
   </header>
@@ -3927,6 +3930,81 @@
           <button class="btn-buy-now" onclick="buyNow()">
             <i class="fas fa-bolt"></i> Buy Now
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access Modal -->
+  <div class="modern-modal" id="accessModal">
+    <div class="modern-modal-content" style="max-width: 450px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-lock"></i> Owner Access</h2>
+        <button class="modern-modal-close" onclick="closeAccessModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Enter the owner password to access the panel.</p>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="accessPassword" placeholder="Enter password" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+        </div>
+        <div id="accessError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+        <button onclick="verifyOwnerPassword()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; margin-top: 1.5rem; cursor: pointer;">
+          <i class="fas fa-lock-open"></i> Unlock
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Owner Panel Modal -->
+  <div class="modern-modal" id="ownerPanelModal">
+    <div class="modern-modal-content" style="max-width: 600px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-crown"></i> Owner Control Panel</h2>
+        <button class="modern-modal-close" onclick="closeOwnerPanel()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <div class="modern-modal-tabs" style="margin-bottom: 2rem;">
+          <button class="modal-tab active" onclick="switchOwnerTab('generate')">Generate Keys</button>
+          <button class="modal-tab" onclick="switchOwnerTab('manage')">Manage Keys</button>
+        </div>
+
+        <!-- Generate Tab -->
+        <div id="generateTab" class="support-tab-content active">
+          <h3 style="margin-bottom: 1rem; color: var(--accent);">Generate Access Key</h3>
+          <div class="form-group">
+            <label>Panel Name</label>
+            <input type="text" id="panelName" placeholder="e.g., Developer Panel, Admin Panel" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+          </div>
+          <div class="form-group">
+            <label>Key Type</label>
+            <select id="keyType" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+              <option value="admin">Admin (Full Access)</option>
+              <option value="moderator">Moderator (Limited Access)</option>
+              <option value="viewer">Viewer (Read-Only)</option>
+              <option value="custom">Custom Permission</option>
+            </select>
+          </div>
+          <button onclick="generateKey()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; margin-top: 1rem;">
+            <i class="fas fa-plus"></i> Generate Key
+          </button>
+          <div id="generatedKeyDisplay" style="margin-top: 1.5rem; padding: 1rem; background: #0a0a0c; border: 1px solid #a855f7; border-radius: 8px; display: none;">
+            <p style="color: #888; font-size: 0.9rem; margin-bottom: 0.5rem;">Generated Key:</p>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="generatedKeyValue" readonly style="flex: 1; padding: 0.8rem; background: #16161a; border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-family: monospace; font-size: 0.85rem;">
+              <button onclick="copyToClipboard('generatedKeyValue')" style="padding: 0.8rem 1rem; background: #a855f7; border: none; border-radius: 6px; color: #fff; cursor: pointer;">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manage Tab -->
+        <div id="manageTab" class="support-tab-content">
+          <h3 style="margin-bottom: 1rem; color: var(--accent);">Active Keys</h3>
+          <div id="keysList" style="max-height: 400px; overflow-y: auto;">
+            <p style="text-align: center; color: #888; padding: 2rem;">No keys generated yet.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -4921,6 +4999,157 @@ For support, contact: support@atlasfn.com
       // Show modal
       document.getElementById('productDetailModal').classList.add('active');
       document.body.style.overflow = 'hidden';
+    }
+
+    // ===== OWNER ACCESS SYSTEM =====
+    const ownerPassword = 'Atlas2025';
+    const panelKeys = {};
+
+    function openAccessModal() {
+      document.getElementById('accessModal').classList.add('active');
+      document.getElementById('accessPassword').value = '';
+      document.getElementById('accessError').style.display = 'none';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAccessModal() {
+      document.getElementById('accessModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function verifyOwnerPassword() {
+      const password = document.getElementById('accessPassword').value;
+      const errorEl = document.getElementById('accessError');
+      
+      if (password === ownerPassword) {
+        closeAccessModal();
+        loadOwnerPanel();
+        openOwnerPanel();
+      } else {
+        errorEl.textContent = 'Incorrect password';
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function openOwnerPanel() {
+      document.getElementById('ownerPanelModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOwnerPanel() {
+      document.getElementById('ownerPanelModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function switchOwnerTab(tabName) {
+      // Hide all tabs
+      document.getElementById('generateTab').classList.remove('active');
+      document.getElementById('manageTab').classList.remove('active');
+      
+      // Show selected tab
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      
+      // Update active button
+      const buttons = document.querySelectorAll('.modal-tab');
+      buttons.forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function generateKey() {
+      const panelName = document.getElementById('panelName').value.trim();
+      const keyType = document.getElementById('keyType').value;
+      
+      if (!panelName) {
+        showToast('Please enter a panel name', 'error');
+        return;
+      }
+      
+      // Generate a random key
+      const key = 'ATL_' + Math.random().toString(36).substr(2, 9).toUpperCase() + '_' + Date.now().toString(36).toUpperCase();
+      
+      panelKeys[key] = {
+        name: panelName,
+        type: keyType,
+        created: new Date().toLocaleString(),
+        active: true
+      };
+      
+      localStorage.setItem('ownerPanelKeys', JSON.stringify(panelKeys));
+      
+      // Display the generated key
+      document.getElementById('generatedKeyValue').value = key;
+      document.getElementById('generatedKeyDisplay').style.display = 'block';
+      
+      // Clear form
+      document.getElementById('panelName').value = '';
+      document.getElementById('keyType').value = 'admin';
+      
+      showToast('Key generated successfully!', 'success');
+      updateKeysList();
+    }
+
+    function loadOwnerPanel() {
+      const stored = localStorage.getItem('ownerPanelKeys');
+      if (stored) {
+        Object.assign(panelKeys, JSON.parse(stored));
+      }
+      updateKeysList();
+    }
+
+    function updateKeysList() {
+      const keysList = document.getElementById('keysList');
+      const keys = Object.entries(panelKeys);
+      
+      if (keys.length === 0) {
+        keysList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No keys generated yet.</p>';
+        return;
+      }
+      
+      keysList.innerHTML = keys.map(([key, data]) => `
+        <div style="padding: 1rem; background: #0a0a0c; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+            <div>
+              <p style="color: var(--accent); font-weight: 600; margin: 0;">${data.name}</p>
+              <p style="color: #888; font-size: 0.85rem; margin: 0.25rem 0 0 0;">Type: ${data.type} | Created: ${data.created}</p>
+            </div>
+            <button onclick="deleteKey('${key}')" style="padding: 0.5rem 1rem; background: #ff6b6b; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 0.85rem;">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" readonly value="${key}" style="flex: 1; padding: 0.6rem; background: #16161a; border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-family: monospace; font-size: 0.8rem;">
+            <button onclick="copyToClipboard_key('${key}')" style="padding: 0.6rem 1rem; background: #a855f7; border: none; border-radius: 6px; color: #fff; cursor: pointer;">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteKey(key) {
+      if (confirm('Are you sure you want to delete this key?')) {
+        delete panelKeys[key];
+        localStorage.setItem('ownerPanelKeys', JSON.stringify(panelKeys));
+        updateKeysList();
+        showToast('Key deleted', 'success');
+      }
+    }
+
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      element.select();
+      document.execCommand('copy');
+      showToast('Copied to clipboard!', 'success');
+    }
+
+    function copyToClipboard_key(key) {
+      const temp = document.createElement('textarea');
+      temp.value = key;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast('Key copied!', 'success');
     }
 
     function closeProductDetail() {
