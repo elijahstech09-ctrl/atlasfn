@@ -9552,7 +9552,7 @@ For support, contact: support@atlasfn.com
                 <button onclick="copyLicenseKey('${order.accessKey}')" style="width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #00d4ff, #0099cc); border: none; border-radius: 8px; color: #000; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
                   <i class="fas fa-copy"></i> Copy License Key
                 </button>
-                <button onclick="window.location.href = '#'" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
+                <button onclick="document.getElementById('receiptPageModal').remove(); window.location.hash = ''; window.location.reload();" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
                   <i class="fas fa-arrow-left"></i> Back to Home
                 </button>
               </div>
