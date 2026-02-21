@@ -5294,8 +5294,12 @@ For support, contact: support@atlasfn.com
       integrityCheck: true
     };
 
+    function isTestModeActive() {
+      return sessionStorage.getItem('testModeActive') === 'true';
+    }
+
     function showPrivacyOverlay(message) {
-      if (isDevUser()) return;
+      if (isDevUser() || isTestModeActive()) return;
       const overlay = document.getElementById('privacyOverlay');
       const messageEl = document.getElementById('privacyMessage');
       if (!overlay) return;
@@ -5310,14 +5314,14 @@ For support, contact: support@atlasfn.com
     function setupPrivacyGuards() {
       if (privacyConfig.blockContextMenu) {
         document.addEventListener('contextmenu', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           event.preventDefault();
         });
       }
 
       if (privacyConfig.blockSelection) {
         document.addEventListener('selectstart', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           if (event.target && event.target.closest && event.target.closest('input, textarea')) {
             return;
           }
@@ -5325,14 +5329,14 @@ For support, contact: support@atlasfn.com
         });
 
         document.addEventListener('dragstart', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           event.preventDefault();
         });
       }
 
       if (privacyConfig.blockHotkeys) {
         document.addEventListener('keydown', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           const key = event.key.toLowerCase();
           const ctrl = event.ctrlKey || event.metaKey;
           const shift = event.shiftKey;
@@ -5348,7 +5352,7 @@ For support, contact: support@atlasfn.com
       if (privacyConfig.devtoolsOverlay) {
         const threshold = 160;
         setInterval(() => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           const widthGap = window.outerWidth - window.innerWidth;
           const heightGap = window.outerHeight - window.innerHeight;
           if (widthGap > threshold || heightGap > threshold) {
@@ -5365,7 +5369,7 @@ For support, contact: support@atlasfn.com
         };
 
         setInterval(() => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           if (baseline.handleSignup !== (typeof handleSignup === 'function' ? handleSignup.toString() : '')) {
             showPrivacyOverlay('Integrity check failed. Please refresh.');
           }
