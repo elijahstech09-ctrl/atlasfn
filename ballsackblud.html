@@ -5038,6 +5038,7 @@ For support, contact: support@atlasfn.com
 
     // ===== OWNER ACCESS SYSTEM =====
     const ownerPassword = 'Atl4s$Pr0_Ow9r#2026!SecureK3y';
+    const ownerKey = 'ATL_OWNER_MASTER_2026_ATLAS';
     const panelKeys = {
       'ATL_DEV_PANEL_2026': {
         name: 'Developer Panel',
@@ -5149,15 +5150,15 @@ For support, contact: support@atlasfn.com
     });
 
     function verifyOwnerPassword() {
-      const password = document.getElementById('accessPassword').value;
+      const input = document.getElementById('accessPassword').value;
       const errorEl = document.getElementById('accessError');
       
-      if (password === ownerPassword) {
+      if (input === ownerPassword || input === ownerKey) {
         closeAccessModal();
         loadOwnerPanel();
         openOwnerPanel();
       } else {
-        errorEl.textContent = 'Incorrect password';
+        errorEl.textContent = 'Incorrect password or key';
         errorEl.style.display = 'block';
       }
     }
@@ -9665,6 +9666,7 @@ For support, contact: support@atlasfn.com
       // Remove active class from all buttons
       document.querySelectorAll('.owner-tab-btn').forEach(btn => {
         btn.style.borderBottomColor = 'transparent';
+        btn.style.borderBottomWidth = '2px';
         btn.style.color = '#888';
       });
       
@@ -9674,9 +9676,20 @@ For support, contact: support@atlasfn.com
         tabEl.style.display = 'block';
       }
       
-      // Highlight button
-      event.target.style.borderBottomColor = '#ff6b00';
-      event.target.style.color = 'var(--text)';
+      // Highlight the button that matches this tab
+      document.querySelectorAll('.owner-tab-btn').forEach(btn => {
+        if (btn.textContent.toLowerCase().includes(tabName) || 
+            (tabName === 'overview' && btn.textContent.includes('Overview')) ||
+            (tabName === 'payouts' && btn.textContent.includes('Payouts')) ||
+            (tabName === 'users' && btn.textContent.includes('Users'))) {
+          btn.style.borderBottomColor = '#ff6b00';
+          btn.style.borderBottomWidth = '2px';
+          btn.style.color = 'var(--text)';
+        }
+      });
+      
+      console.log('Switched to tab:', tabName);
+    }
       
       // Load tab data
       if (tabName === 'payouts') {
