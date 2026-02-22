@@ -62,7 +62,14 @@
       animation: fadeIn 1s ease-in-out;
       position: relative;
       overflow-x: hidden;
-      cursor: none;
+      cursor: none !important;
+      -webkit-font-smoothing: antialiased;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    * {
+      cursor: none !important;
     }
 
     button,
@@ -70,7 +77,7 @@
     input,
     select,
     textarea {
-      cursor: none;
+      cursor: none !important;
     }
 
     /* Hex Grid Background Canvas */
@@ -80,11 +87,13 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(168, 85, 247, 0.02);
-      border: 1px solid var(--border);
+      background: rgba(168, 85, 247, 0.04);
+      border: 1px solid rgba(168, 85, 247, 0.15);
       pointer-events: none;
       z-index: -1;
-      opacity: 0.3;
+      opacity: 1;
+      will-change: contents;
+      image-rendering: pixelated;
     }
     
     /* Landing Page */
@@ -117,7 +126,7 @@
 
     .landing-logo {
       margin-bottom: 2rem;
-      animation: float 3s ease-in-out infinite;
+      animation: none !important;
     }
 
     @keyframes float {
@@ -170,7 +179,7 @@
       background: rgba(168, 85, 247, 0.1);
       border: 2px solid #a855f7;
       border-radius: 16px;
-      animation: pulse 2s infinite;
+      animation: none !important;
     }
 
     @keyframes pulse {
@@ -232,15 +241,18 @@
     }
 
     header {
-      background: var(--topbar);
+      background: rgba(30, 31, 34, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       padding: 0.75rem 1rem;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 10100;
       border-bottom: none;
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
+      will-change: transform;
     }
     nav {
       display: flex;
@@ -319,10 +331,10 @@
 
     /* Hamburger Menu Button */
     .hamburger-menu {
-      position: fixed;
-      top: 1.5rem;
-      right: 1.5rem;
-      z-index: 11000;
+      position: relative;
+      top: 0;
+      left: 0;
+      z-index: 10110;
       background: rgba(168, 85, 247, 0.1);
       border: 2px solid var(--accent);
       border-radius: 12px;
@@ -336,6 +348,8 @@
       cursor: pointer;
       transition: all 0.3s;
       padding: 0;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
     }
 
     .hamburger-menu.hidden {
@@ -467,6 +481,32 @@
       text-align: center;
     }
 
+    .panel-action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.6rem;
+      grid-column: 1 / -1;
+    }
+
+    .panel-action-btn {
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #d8dbe2;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .panel-action-btn:hover {
+      background: rgba(168, 85, 247, 0.18);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
     .sidebar-badge {
       position: absolute;
       right: 1rem;
@@ -507,6 +547,10 @@
       backdrop-filter: blur(10px);
       z-index: 11000;
       padding: 2rem;
+    }
+
+    .modern-modal.active {
+      display: flex;
     }
 
     /* Modal Tabs */
@@ -1990,7 +2034,7 @@
       inset: -2px;
       border-radius: 22px;
       background: conic-gradient(from 0deg, transparent 0deg, rgba(168, 85, 247, 0.9) 90deg, transparent 180deg, rgba(168, 85, 247, 0.4) 270deg, transparent 360deg);
-      animation: panelGlowSpin 6s linear infinite;
+      animation: none !important;
       z-index: -1;
       filter: blur(2px);
     }
@@ -2875,7 +2919,7 @@
 
     .payment-method-card.selected i {
       color: #00d4ff;
-      animation: pulse 1s infinite;
+      animation: none !important;
     }
 
     @keyframes pulse {
@@ -3144,26 +3188,33 @@
       pointer-events: none;
       z-index: 13000;
       transform: translate(-50%, -50%);
-      transition: transform 0.1s ease-out;
+      will-change: left, top;
+      transition: none;
+      display: block;
+      visibility: visible;
+      left: 0;
+      top: 0;
+      opacity: 1;
     }
 
     .crosshair::before,
     .crosshair::after {
       content: '';
       position: absolute;
-      background: linear-gradient(90deg, #a855f7, #000);
-      box-shadow: 0 0 10px #a855f7;
+      background: linear-gradient(90deg, #a855f7, #d946ef);
+      box-shadow: 0 0 15px #a855f7, 0 0 30px rgba(168, 85, 247, 0.8);
+      z-index: 13001;
     }
 
     .crosshair::before {
-      width: 2px;
+      width: 4px;
       height: 100%;
       left: 50%;
       transform: translateX(-50%);
     }
 
     .crosshair::after {
-      height: 2px;
+      height: 4px;
       width: 100%;
       top: 50%;
       transform: translateY(-50%);
@@ -3171,61 +3222,26 @@
 
     .crosshair-center {
       position: absolute;
-      width: 8px;
-      height: 8px;
-      background: #a855f7;
-      border: 2px solid #000;
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle, #fff 0%, #a855f7 70%);
+      border: 2px solid #a855f7;
       border-radius: 50%;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 10px #a855f7, inset 0 0 5px #fff;
+      transform: translate(-50%, -50%) translateZ(0);
+      box-shadow: 0 0 20px #a855f7, 0 0 40px rgba(168, 85, 247, 0.9), inset 0 0 8px #fff;
+      will-change: auto;
+      z-index: 13002;
     }
 
-    /* Shockwave Animation */
-
-    /* Click Shockwave Effect */
-    .shockwave {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #a855f7;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      animation: shockwaveExpand 0.6s ease-out forwards;
-    }
-
-    @keyframes shockwaveExpand {
-      0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-        border-width: 3px;
-      }
-      50% {
-        opacity: 0.6;
-        border-width: 2px;
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(5.3);
-        border-width: 1px;
-      }
-    }
+    /* Shockwave Animation - Removed */
 
   </style>
 </head>
 <body>
   <!-- Hex Grid Background Canvas -->
   <canvas id="hexCanvas"></canvas>
-
-  <!-- Hamburger Menu Button -->
-  <button class="hamburger-menu" id="hamburgerBtn" onclick="toggleSidebar()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
 
   <!-- Sidebar Menu -->
   <div class="sidebar-menu" id="sidebarMenu">
@@ -3234,23 +3250,15 @@
       <button class="sidebar-close" onclick="toggleSidebar()">×</button>
     </div>
     <div class="sidebar-content">
-      <div class="sidebar-section"><i class="fas fa-layer-group"></i> Panels</div>
-      <a href="#" class="sidebar-item" id="menu-dev-panel" onclick="openDevPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-code"></i>
-        <span>Developer Panel</span>
-      </a>
-      <a href="#" class="sidebar-item" id="menu-head-panel" onclick="openHeadStaffPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-crown"></i>
-        <span>Head Staff Panel</span>
-      </a>
-      <a href="#" class="sidebar-item" id="menu-staff-panel" onclick="openStaffPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-shield-alt"></i>
-        <span>Staff Panel</span>
-      </a>
-      <a href="#" class="sidebar-item" id="menu-owner-panel" onclick="openOwnerPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-crown"></i>
-        <span>Owner Panel</span>
-      </a>
+      <div class="sidebar-section"><i class="fas fa-bolt"></i> Panels</div>
+      <div class="panel-action-grid">
+        <button class="panel-action-btn" type="button">Fly</button>
+        <button class="panel-action-btn" type="button">Godmode</button>
+        <button class="panel-action-btn" type="button">Invisible</button>
+        <button class="panel-action-btn" type="button">Set Health</button>
+        <button class="panel-action-btn" type="button">Set Jump</button>
+        <button class="panel-action-btn" type="button">Set Speed</button>
+      </div>
       <div class="sidebar-section"><i class="fas fa-user"></i> Account</div>
       <a href="#" class="sidebar-item" onclick="openOrderHistory()">
         <i class="fas fa-shopping-bag"></i>
@@ -3287,7 +3295,7 @@
       
       <!-- Content that changes based on login status -->
       <div id="landingLoggedIn" style="display: none;">
-        <button class="landing-btn" onclick="goToStore()">ENTER STORE</button>
+        <button class="landing-btn" onclick="goToStore()">PURCHASE ACCESS</button>
       </div>
       
       <div id="landingLoggedOut">
@@ -3310,12 +3318,13 @@
 
   <header>
     <nav>
-      <div class="nav-brand">
-        <img src="atlas_logo.png" class="atlas-logo" alt="Atlas Logo" onerror="handleLogoError(this)">
-        <span style="font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 600; color: #f2f3f5;">Atlas Panel</span>
-      </div>
+      <button class="hamburger-menu" id="hamburgerBtn" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <div class="nav-links">
-        <a href="#store-section">Store</a>
+        <a href="purchase.html">Purchase</a>
         <a href="#">About</a>
         <a href="#faq">FAQ</a>
         <a href="https://discord.gg/Y6jVxPVV" target="_blank" title="Join our Discord">
@@ -4000,6 +4009,25 @@
     </div>
   </div>
 
+  <!-- Redeem Success Modal -->
+  <div class="modern-modal" id="redeemSuccessModal">
+    <div class="modern-modal-content" style="max-width: 450px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-check-circle"></i> Redeemed Successfully</h2>
+        <button class="modern-modal-close" onclick="closeRedeemSuccessModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Your key has been redeemed. Access granted to <span id="redeemSuccessName" style="color: var(--accent);"></span>.</p>
+        <button onclick="openRedeemPanel()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+          <i class="fas fa-external-link-alt"></i> Open Panel
+        </button>
+        <button onclick="closeRedeemSuccessModal()" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 8px; font-size: 0.85rem; margin-top: 0.5rem; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Owner Access Modal -->
   <div class="modern-modal" id="accessModal">
     <div class="modern-modal-content" style="max-width: 450px;">
@@ -4177,165 +4205,68 @@
     <p>Choose your access duration and complete checkout securely in minutes.</p>
   </section>
 
-  <div class="container">
-    <div class="payment-section" id="store-section">
-      <h2>Access Key Store</h2>
-      <p>Select your access duration and checkout securely.</p>
-
-      <div class="payment-container" id="store-cards">
-        <div class="product-card" onclick="openProductDetail('1_day')">
-          <div class="product-card-badge">In Stock</div>
-          <div class="product-card-image">
-            <i class="fas fa-key"></i>
-          </div>
-          <h3 class="product-card-title">1 Day Access</h3>
-          <div class="product-card-price">$3.99</div>
-          <p class="product-card-desc">24-hour access to Atlas FN</p>
+  <section class="payment-section" id="purchase">
+    <div class="container">
+      <h2 style="font-size: 2.5rem; margin-bottom: 1rem; text-align: center;">Choose Your Access</h2>
+      <p style="text-align: center; color: #a06aff; margin-bottom: 2.5rem;">Select your preferred duration and checkout securely</p>
+      
+      <div class="payment-container">
+        <div class="product-card" onclick="goToProductCheckout('test')" style="cursor: pointer;">
+          <div class="product-card-badge">Test</div>
+          <div class="product-card-image"><i class="fas fa-flask"></i></div>
+          <div class="product-card-title">Test Purchase</div>
+          <div class="product-card-price">$0.50</div>
+          <div class="product-card-desc">Test the payment system</div>
+          <button class="btn-pay" type="button">Select Plan</button>
         </div>
-
-        <div class="product-card" onclick="openProductDetail('1_week')">
-          <div class="product-card-badge">In Stock</div>
-          <div class="product-card-image">
-            <i class="fas fa-key"></i>
-          </div>
-          <h3 class="product-card-title">1 Week Access</h3>
-          <div class="product-card-price">$9.99</div>
-          <p class="product-card-desc">7 days of unrestricted access</p>
-        </div>
-
-        <div class="product-card" onclick="openProductDetail('1_month')">
-          <div class="product-card-badge">In Stock</div>
-          <div class="product-card-image">
-            <i class="fas fa-key"></i>
-          </div>
-          <h3 class="product-card-title">1 Month Access</h3>
-          <div class="product-card-price">$19.99</div>
-          <p class="product-card-desc">30 days of full features</p>
-        </div>
-
-        <div class="product-card" onclick="openProductDetail('3_months')">
-          <div class="product-card-badge">Popular</div>
-          <div class="product-card-image">
-            <i class="fas fa-crown"></i>
-          </div>
-          <h3 class="product-card-title">3 Months Access</h3>
-          <div class="product-card-price">$39.99</div>
-          <p class="product-card-desc">90 days of premium access</p>
-        </div>
-
-        <div class="product-card" onclick="openProductDetail('lifetime')">
-          <div class="product-card-badge">Best Value</div>
-          <div class="product-card-image">
-            <i class="fas fa-star"></i>
-          </div>
-          <h3 class="product-card-title">Lifetime Access</h3>
-          <div class="product-card-price">$99.99</div>
-          <p class="product-card-desc">Unlimited access forever</p>
-        </div>
-      </div>
-
-      <div class="payment-form-container" id="store-view" style="display: none;">
-        <h3 style="margin-bottom: 1.5rem; color: var(--accent);">Choose Access Duration</h3>
-
-        <div class="form-group">
-          <label for="access-duration">Access Length <span style="color: #ff6b6b;">*</span></label>
-          <select id="access-duration" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-size: 1rem;">
-            <option value="test">Test Purchase - $0.50</option>
-            <option value="1_day">1 day - $3.99</option>
-            <option value="1_week">1 week - $9.99</option>
-            <option value="1_month">1 month - $19.99</option>
-            <option value="3_months">3 months - $39.99</option>
-            <option value="lifetime">Lifetime - $99.99</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="access-amount">Price (USD) <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="access-amount" readonly>
-        </div>
-
-        <h4 style="margin: 2rem 0 1rem; color: var(--text); font-size: 1.1rem;">Contact Details</h4>
-
-        <div class="form-group">
-          <label for="donor-name">Full Name <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="donor-name" placeholder="John Doe" required>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-email">Email Address <span style="color: #ff6b6b;">*</span></label>
-          <input type="email" id="donor-email" placeholder="your@email.com" required>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-phone">Phone Number <span style="color: #888; font-weight: normal;">(optional)</span></label>
-          <input type="tel" id="donor-phone" placeholder="+1 (555) 123-4567">
-        </div>
-
-        <h4 style="margin: 2rem 0 1rem; color: var(--text); font-size: 1.1rem;">Billing Address</h4>
-
-        <div class="form-group">
-          <label for="donor-address">Street Address <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="donor-address" placeholder="123 Main Street" required>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-city">City <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="donor-city" placeholder="New York" required>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <div class="form-group">
-            <label for="donor-state">State/Province <span style="color: #ff6b6b;">*</span></label>
-            <input type="text" id="donor-state" placeholder="NY" required>
-          </div>
-
-          <div class="form-group">
-            <label for="donor-zip">Zip/Postal Code <span style="color: #ff6b6b;">*</span></label>
-            <input type="text" id="donor-zip" placeholder="10001" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-country">Country <span style="color: #ff6b6b;">*</span></label>
-          <select id="donor-country" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-size: 1rem;">
-            <option value="US">United States</option>
-            <option value="CA">Canada</option>
-            <option value="GB">United Kingdom</option>
-            <option value="AU">Australia</option>
-            <option value="DE">Germany</option>
-            <option value="FR">France</option>
-            <option value="IT">Italy</option>
-            <option value="ES">Spain</option>
-            <option value="MX">Mexico</option>
-            <option value="BR">Brazil</option>
-            <option value="JP">Japan</option>
-            <option value="CN">China</option>
-            <option value="IN">India</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </div>
-
-        <h4 style="margin: 2rem 0 1rem; color: var(--text); font-size: 1.1rem;">Payment Method</h4>
-
-        <div class="form-group">
-          <label for="card-element">Card Details <span style="color: #ff6b6b;">*</span></label>
-          <div id="card-element"></div>
-          <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;">
-            <i class="fas fa-lock"></i> Secure payment powered by Stripe
-          </p>
-        </div>
-
-        <button id="pay-button" class="btn-pay" style="width: 100%;">
-          <i class="fas fa-credit-card"></i> Purchase Access Key
-        </button>
-        <div id="payment-message" style="margin-top: 1rem; color: #aaa;"></div>
         
-        <p style="font-size: 0.8rem; color: #666; margin-top: 1rem; text-align: center;">
-          <span style="color: #ff6b6b;">*</span> Required fields
-        </p>
+        <div class="product-card" onclick="goToProductCheckout('1_day')" style="cursor: pointer;">
+          <div class="product-card-badge">In Stock</div>
+          <div class="product-card-image"><i class="fas fa-key"></i></div>
+          <div class="product-card-title">1 Day Access</div>
+          <div class="product-card-price">$3.99</div>
+          <div class="product-card-desc">24-hour access to all features</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('1_week')" style="cursor: pointer;">
+          <div class="product-card-badge">In Stock</div>
+          <div class="product-card-image"><i class="fas fa-key"></i></div>
+          <div class="product-card-title">1 Week Access</div>
+          <div class="product-card-price">$9.99</div>
+          <div class="product-card-desc">7 days of full access</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('1_month')" style="cursor: pointer;">
+          <div class="product-card-badge">In Stock</div>
+          <div class="product-card-image"><i class="fas fa-key"></i></div>
+          <div class="product-card-title">1 Month Access</div>
+          <div class="product-card-price">$19.99</div>
+          <div class="product-card-desc">30 days with premium support</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('3_months')" style="cursor: pointer;">
+          <div class="product-card-badge">Popular</div>
+          <div class="product-card-image"><i class="fas fa-crown"></i></div>
+          <div class="product-card-title">3 Months Access</div>
+          <div class="product-card-price">$39.99</div>
+          <div class="product-card-desc">90 days of premium access</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('lifetime')" style="cursor: pointer;">
+          <div class="product-card-badge">Best Value</div>
+          <div class="product-card-image"><i class="fas fa-star"></i></div>
+          <div class="product-card-title">Lifetime Access</div>
+          <div class="product-card-price">$99.99</div>
+          <div class="product-card-desc">Unlimited access forever</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <section class="faq-section" id="faq">
     <div class="container">
@@ -4453,6 +4384,14 @@
   <script src="https://js.stripe.com/v3/"></script>
 
   <script>
+    // ====== PRODUCTS DISPLAY ======
+    function goToProductCheckout(productKey) {
+      localStorage.setItem('selectedProduct', productKey);
+      window.location.href = 'purchase.html?product=' + productKey;
+    }
+
+    console.log('✅ Atlas FN loaded');
+
     // ====== STRIPE CONFIGURATION ======
     // IMPORTANT: Paste your Stripe keys from https://dashboard.stripe.com/apikeys
     const STRIPE_CONFIG = {
@@ -5013,11 +4952,7 @@ For support, contact: support@atlasfn.com
     }
 
     function goToStore() {
-      const landingPage = document.getElementById('landingPage');
-      landingPage.classList.add('hidden');
-      setTimeout(() => {
-        document.getElementById('store-section').scrollIntoView({ behavior: 'smooth' });
-      }, 500);
+      window.location.href = 'purchase.html';
     }
 
     function openLoginFromLanding() {
@@ -5033,11 +4968,6 @@ For support, contact: support@atlasfn.com
       // Initialize custom payment system
       if (typeof paymentSystem !== 'undefined') {
         paymentSystem.init();
-      }
-      
-      // Initialize payout system
-      if (typeof payoutSystem !== 'undefined') {
-        payoutSystem.init();
       }
       
       // Landing page disabled - skip checkLandingPageAuth();
@@ -5122,6 +5052,23 @@ For support, contact: support@atlasfn.com
       document.body.style.overflow = '';
     }
 
+    function openRedeemSuccess(panelName) {
+      const nameEl = document.getElementById('redeemSuccessName');
+      if (nameEl) nameEl.textContent = panelName || 'your panel';
+      document.getElementById('redeemSuccessModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRedeemSuccessModal() {
+      document.getElementById('redeemSuccessModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function openRedeemPanel() {
+      closeRedeemSuccessModal();
+      window.open('panel.html', '_blank');
+    }
+
     function openOwnerAccessPrompt() {
       closeRedeemModal();
       setTimeout(() => openAccessModal(), 100);
@@ -5148,7 +5095,6 @@ For support, contact: support@atlasfn.com
       
       if (keys[key] && keys[key].active) {
         closeRedeemModal();
-        showToast('Key redeemed! Access granted to: ' + keys[key].name, 'success');
         // Store the redeemed key for the user
         localStorage.setItem('userActiveKey', JSON.stringify({
           key: key,
@@ -5159,11 +5105,7 @@ For support, contact: support@atlasfn.com
         
         // Show staff ticket tab if applicable
         checkStaffAccess();
-        
-        // Open panel in new tab
-        setTimeout(() => {
-          window.open('panel.html', '_blank');
-        }, 1000);
+        openRedeemSuccess(keys[key].name);
       } else {
         errorEl.textContent = 'Invalid or inactive key';
         errorEl.style.display = 'block';
@@ -5439,7 +5381,9 @@ For support, contact: support@atlasfn.com
       }
     }
 
-    document.getElementById('pay-button').addEventListener('click', async (e) => {
+    const payButton = document.getElementById('pay-button');
+    if (payButton) {
+      payButton.addEventListener('click', async (e) => {
       e.preventDefault();
 
       // Get all form values
@@ -5517,7 +5461,8 @@ For support, contact: support@atlasfn.com
 
       // Process payment directly with card
       proceedWithPayment();
-    });
+      });
+    }
 
     // Proceed with payment after method selection
     async function proceedWithPayment() {
@@ -9337,91 +9282,85 @@ For support, contact: support@atlasfn.com
       }
     }
 
-    // ====== CROSSHAIR AND EFFECTS ======
-    window.addEventListener('DOMContentLoaded', () => {
-      // Crosshair follow mouse
+    // ====== PERFORMANCE OPTIMIZED: CROSSHAIR AND HEX EFFECTS ======
+    // Simple initialization - runs after DOM is ready
+    function initializeEffects() {
+      console.log('🔧 Initializing crosshair and hex effects...');
+      
+      // Crosshair setup
       const crosshair = document.getElementById('crosshair');
-      if (!crosshair) return;
-      
-      let mouseX = 0, mouseY = 0;
+      if (crosshair) {
+        console.log('✅ Crosshair found');
+        crosshair.style.left = window.innerWidth / 2 + 'px';
+        crosshair.style.top = window.innerHeight / 2 + 'px';
+        crosshair.style.opacity = '1';
+        console.log('✅ Crosshair positioned at center');
+        
+        document.addEventListener('mousemove', (e) => {
+          crosshair.style.left = e.clientX + 'px';
+          crosshair.style.top = e.clientY + 'px';
+        }, { passive: true });
+        
+        // Click animation
+        document.addEventListener('click', () => {
+          crosshair.style.transform = 'translate(-50%, -50%) scale(0.8)';
+          setTimeout(() => {
+            crosshair.style.transform = 'translate(-50%, -50%) scale(1)';
+          }, 100);
+        }, { passive: true });
+      } else {
+        console.error('❌ Crosshair element NOT found');
+      }
 
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        crosshair.style.left = mouseX + 'px';
-        crosshair.style.top = mouseY + 'px';
-      });
-
-      // Shockwave effect on click
-      document.addEventListener('click', (e) => {
-        const shockwave = document.createElement('div');
-        shockwave.className = 'shockwave';
-        shockwave.style.left = e.clientX + 'px';
-        shockwave.style.top = e.clientY + 'px';
-        document.body.appendChild(shockwave);
-
-        // Create multiple expanding rings
-        setTimeout(() => {
-          const shockwave2 = document.createElement('div');
-          shockwave2.className = 'shockwave';
-          shockwave2.style.left = e.clientX + 'px';
-          shockwave2.style.top = e.clientY + 'px';
-          shockwave2.style.animationDelay = '0.1s';
-          document.body.appendChild(shockwave2);
-          setTimeout(() => shockwave2.remove(), 700);
-        }, 50);
-
-        setTimeout(() => shockwave.remove(), 600);
-
-        // Crosshair click animation
-        crosshair.style.transform = 'translate(-50%, -50%) scale(0.8)';
-        setTimeout(() => {
-          crosshair.style.transform = 'translate(-50%, -50%) scale(1)';
-        }, 100);
-      });
-
-      // ====== HEXAGONAL GRID ANIMATION ======
+      // Hex canvas setup
       const canvas = document.getElementById('hexCanvas');
-      if (!canvas) return;
-      
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      
-      let hexMouseX = 0;
-      let hexMouseY = 0;
-      let hexagons = [];
-      
-      // Set canvas size
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        generateHexagons();
+      if (!canvas) {
+        console.error('❌ Canvas not found');
+        return;
       }
       
-      // Hexagon properties
+      console.log('✅ Canvas found');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error('❌ Canvas context failed');
+        return;
+      }
+      
+      console.log('✅ Canvas context ready');
+      let hexMouseX = 0, hexMouseY = 0;
+      let hexagons = [];
+      let lastUpdateTime = 0;
+      const updateInterval = 1000 / 60;
       const hexRadius = 30;
       const hexHeight = Math.sin(Math.PI / 3) * hexRadius;
       
-      // Generate hexagon grid
-      function generateHexagons() {
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        console.log('📐 Canvas resized to', canvas.width, 'x', canvas.height);
         hexagons = [];
-        const cols = Math.ceil(canvas.width / (hexRadius * 1.5)) + 2;
-        const rows = Math.ceil(canvas.height / (hexHeight * 2)) + 2;
-        
-        for (let row = -1; row < rows; row++) {
-          for (let col = -1; col < cols; col++) {
+        const cols = Math.ceil(canvas.width / (hexRadius * 1.5)) + 1;
+        const rows = Math.ceil(canvas.height / (hexHeight * 2)) + 1;
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
             const x = col * hexRadius * 1.5;
             const y = row * hexHeight * 2 + (col % 2 === 0 ? 0 : hexHeight);
             hexagons.push({ x, y });
           }
         }
+        console.log('✅ Generated', hexagons.length, 'hexagons');
       }
       
-      // Draw single hexagon
+      const hexAngles = [];
+      for (let i = 0; i < 6; i++) {
+        hexAngles.push((Math.PI / 3) * i);
+      }
+      
       function drawHexagon(x, y, radius, opacity) {
+        if (opacity < 0.02) return;
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI / 3) * i;
+          const angle = hexAngles[i];
           const hx = x + radius * Math.cos(angle);
           const hy = y + radius * Math.sin(angle);
           if (i === 0) ctx.moveTo(hx, hy);
@@ -9429,45 +9368,67 @@ For support, contact: support@atlasfn.com
         }
         ctx.closePath();
         ctx.strokeStyle = `rgba(168, 85, 247, ${opacity})`;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.stroke();
       }
       
-      // Animation loop
+      let frameCount = 0;
       function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const now = performance.now();
+        if (now - lastUpdateTime < updateInterval) {
+          requestAnimationFrame(animate);
+          return;
+        }
+        lastUpdateTime = now;
+        frameCount++;
         
-        hexagons.forEach(hex => {
+        if (frameCount === 1) {
+          console.log('✅ Animation started - first frame rendered');
+        }
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.03)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < hexagons.length; i++) {
+          const hex = hexagons[i];
           const dx = hexMouseX - hex.x;
           const dy = hexMouseY - hex.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const maxDistance = 200;
+          const distSq = dx * dx + dy * dy;
+          const maxDistSq = 200 * 200;
           
-          // Calculate opacity based on distance from mouse
-          let opacity = 0.1;
-          if (distance < maxDistance) {
-            opacity = 0.6 * (1 - distance / maxDistance);
+          if (distSq < maxDistSq) {
+            const distance = Math.sqrt(distSq);
+            const opacity = (1 - distance / 200) * 0.9;
+            drawHexagon(hex.x, hex.y, hexRadius, opacity);
+          } else {
+            drawHexagon(hex.x, hex.y, hexRadius, 0.2);
           }
-          
-          drawHexagon(hex.x, hex.y, hexRadius, opacity);
-        });
+        }
         
         requestAnimationFrame(animate);
       }
       
-      // Track mouse position for hex grid
       document.addEventListener('mousemove', (e) => {
         hexMouseX = e.clientX;
         hexMouseY = e.clientY;
-      });
+      }, { passive: true });
       
-      // Handle window resize
       window.addEventListener('resize', resizeCanvas);
       
-      // Initialize hex grid
       resizeCanvas();
       animate();
-    });
+      console.log('✅ All effects initialized successfully');
+    }
+    
+    // Wait a bit to ensure DOM is fully ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeEffects);
+      console.log('⏳ Waiting for DOMContentLoaded...');
+    } else {
+      console.log('✅ DOM already ready, initializing now...');
+      initializeEffects();
+    }
     
     // ====== PAYMENT MANAGEMENT FUNCTIONS ======
 

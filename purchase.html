@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purchase Access</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f11;
+      --card: #15151a;
+      --text: #e6e7ea;
+      --muted: #9aa0aa;
+      --accent: #a855f7;
+      --accent-2: #d946ef;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Sora', system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(168, 85, 247, 0.12), transparent),
+        radial-gradient(900px 500px at 90% 10%, rgba(217, 70, 239, 0.12), transparent),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 24px 60px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 6px 24px;
+    }
+
+    .topbar a {
+      color: var(--text);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+
+    .topbar span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 6px 0 18px;
+    }
+
+    .purchase-shell {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .panel {
+      background: rgba(22, 22, 26, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .panel h2 {
+      font-size: 1.25rem;
+      margin-bottom: 14px;
+    }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .plan-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .plan-card.active {
+      border-color: var(--accent);
+      background: rgba(168, 85, 247, 0.15);
+      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.2);
+    }
+
+    .plan-card h3 {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .plan-price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .summary {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .summary-total {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem 0.85rem;
+      background: rgba(10, 10, 12, 0.9);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    #card-element {
+      padding: 0.9rem;
+      background: rgba(10, 10, 12, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .pay-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 0.9rem 1rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .success-box {
+      margin-top: 14px;
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.12);
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 960px) {
+      .purchase-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="ballsackblud.html"><i class="fas fa-arrow-left"></i> Back</a>
+    <span>Secure checkout</span>
+  </div>
+
+  <div class="page-title">Purchase Access</div>
+
+  <div class="purchase-shell">
+    <div class="panel">
+      <h2>Select your access</h2>
+      <div class="plan-grid" id="planGrid"></div>
+      <div class="summary">
+        <div class="summary-row">
+          <span>Selected plan</span>
+          <span id="summaryPlan">-</span>
+        </div>
+        <div class="summary-row">
+          <span>Duration</span>
+          <span id="summaryDuration">-</span>
+        </div>
+        <div class="summary-row summary-total">
+          <span>Total</span>
+          <span id="summaryPrice">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Checkout</h2>
+      <div class="form-grid">
+        <div>
+          <label for="fullName">Full Name *</label>
+          <input id="fullName" type="text" placeholder="John Doe" required />
+        </div>
+        <div>
+          <label for="email">Email *</label>
+          <input id="email" type="email" placeholder="you@email.com" required />
+        </div>
+        <div>
+          <label for="phone">Phone (optional)</label>
+          <input id="phone" type="tel" placeholder="+1 (555) 123-4567" />
+        </div>
+        <div>
+          <label for="address">Street Address *</label>
+          <input id="address" type="text" placeholder="123 Main Street" required />
+        </div>
+        <div class="two-col">
+          <div>
+            <label for="city">City *</label>
+            <input id="city" type="text" placeholder="New York" required />
+          </div>
+          <div>
+            <label for="state">State/Province *</label>
+            <input id="state" type="text" placeholder="NY" required />
+          </div>
+        </div>
+        <div class="two-col">
+          <div>
+            <label for="zip">Zip/Postal Code *</label>
+            <input id="zip" type="text" placeholder="10001" required />
+          </div>
+          <div>
+            <label for="country">Country *</label>
+            <select id="country" required>
+              <option value="US">United States</option>
+              <option value="CA">Canada</option>
+              <option value="GB">United Kingdom</option>
+              <option value="AU">Australia</option>
+              <option value="DE">Germany</option>
+              <option value="FR">France</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="card-element">Card Details *</label>
+          <div id="card-element"></div>
+          <div class="muted"><i class="fas fa-lock"></i> Secure payment powered by Stripe</div>
+          <div class="message" id="card-errors"></div>
+        </div>
+      </div>
+      <button class="pay-btn" id="payButton"><i class="fas fa-credit-card"></i> Purchase Access Key</button>
+      <div class="message" id="paymentMessage"></div>
+      <div class="success-box" id="successBox">
+        <div><strong>Payment successful!</strong> Your access key:</div>
+        <div id="successKey" style="font-family: monospace; margin-top: 6px;"></div>
+        <button class="copy-btn" id="copyKeyBtn" type="button">Copy Key</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    const STRIPE_CONFIG = {
+      publishableKey: 'pk_live_51T2ZQBCOhVW1Fv0S9OFkNFyPbHp3qZSifECjfOyNVCV1EAxAxRe2BxYx62gu4k08AWvf6Jos2UbHEZS2AXbbSlox00kVF5dmSr'
+    };
+
+    const plans = {
+      test: { label: 'Test Purchase', duration: 'Instant', price: 0.50 },
+      '1_day': { label: '1 Day Access', duration: '24 hours', price: 3.99 },
+      '1_week': { label: '1 Week Access', duration: '7 days', price: 9.99 },
+      '1_month': { label: '1 Month Access', duration: '30 days', price: 19.99 },
+      '3_months': { label: '3 Months Access', duration: '90 days', price: 39.99 },
+      lifetime: { label: 'Lifetime Access', duration: 'Forever', price: 99.99 }
+    };
+
+    let selectedPlan = '1_week';
+    let stripe = null;
+    let elements = null;
+    let cardElement = null;
+
+    function renderPlans() {
+      const grid = document.getElementById('planGrid');
+      grid.innerHTML = '';
+
+      Object.entries(plans).forEach(([key, plan]) => {
+        const card = document.createElement('div');
+        card.className = 'plan-card' + (key === selectedPlan ? ' active' : '');
+        card.innerHTML = `
+          <h3>${plan.label}</h3>
+          <div class="plan-price">$${plan.price.toFixed(2)}</div>
+          <div style="color: var(--muted); font-size: 0.85rem; margin-top: 6px;">${plan.duration}</div>
+        `;
+        card.addEventListener('click', () => selectPlan(key));
+        grid.appendChild(card);
+      });
+
+      updateSummary();
+    }
+
+    function selectPlan(key) {
+      selectedPlan = key;
+      renderPlans();
+    }
+
+    function updateSummary() {
+      const plan = plans[selectedPlan];
+      document.getElementById('summaryPlan').textContent = plan.label;
+      document.getElementById('summaryDuration').textContent = plan.duration;
+      document.getElementById('summaryPrice').textContent = `$${plan.price.toFixed(2)}`;
+    }
+
+    function initializeStripe() {
+      stripe = Stripe(STRIPE_CONFIG.publishableKey);
+      elements = stripe.elements();
+      cardElement = elements.create('card', {
+        style: {
+          base: {
+            color: '#e6e7ea',
+            fontFamily: 'Sora, sans-serif',
+            fontSize: '16px',
+            '::placeholder': { color: '#7c7f88' }
+          },
+          invalid: { color: '#ff6b6b' }
+        }
+      });
+      cardElement.mount('#card-element');
+      cardElement.on('change', (event) => {
+        const errorEl = document.getElementById('card-errors');
+        errorEl.textContent = event.error ? event.error.message : '';
+      });
+    }
+
+    function generateAccessKey() {
+      const part = () => Math.random().toString(36).slice(2, 7).toUpperCase();
+      return `ATL_${part()}_${part()}`;
+    }
+
+    async function handlePayment() {
+      const message = document.getElementById('paymentMessage');
+      const payButton = document.getElementById('payButton');
+      const successBox = document.getElementById('successBox');
+      const successKey = document.getElementById('successKey');
+
+      message.textContent = '';
+      successBox.style.display = 'none';
+
+      const requiredFields = ['fullName', 'email', 'address', 'city', 'state', 'zip'];
+      for (const field of requiredFields) {
+        if (!document.getElementById(field).value.trim()) {
+          message.textContent = 'Please fill in all required fields.';
+          message.style.color = '#ff6b6b';
+          return;
+        }
+      }
+
+      payButton.disabled = true;
+      payButton.textContent = 'Processing...';
+
+      try {
+        const plan = plans[selectedPlan];
+        const response = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: Math.round(plan.price * 100),
+            currency: 'usd',
+            description: `Atlas FN - ${plan.label}`,
+            metadata: { plan: selectedPlan, email: document.getElementById('email').value }
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create payment intent');
+        }
+
+        const data = await response.json();
+        const result = await stripe.confirmCardPayment(data.clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: document.getElementById('fullName').value,
+              email: document.getElementById('email').value,
+              phone: document.getElementById('phone').value,
+              address: {
+                line1: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                postal_code: document.getElementById('zip').value,
+                country: document.getElementById('country').value
+              }
+            }
+          }
+        });
+
+        if (result.error) {
+          throw new Error(result.error.message);
+        }
+
+        if (result.paymentIntent.status === 'succeeded') {
+          const accessKey = generateAccessKey();
+          localStorage.setItem('lastPurchaseKey', accessKey);
+          successKey.textContent = accessKey;
+          successBox.style.display = 'block';
+          message.textContent = 'Payment completed successfully.';
+          message.style.color = '#22c55e';
+        }
+      } catch (error) {
+        message.textContent = error.message;
+        message.style.color = '#ff6b6b';
+      } finally {
+        payButton.disabled = false;
+        payButton.innerHTML = '<i class="fas fa-credit-card"></i> Purchase Access Key';
+      }
+    }
+
+    document.getElementById('copyKeyBtn').addEventListener('click', () => {
+      const key = document.getElementById('successKey').textContent;
+      if (!key) return;
+      navigator.clipboard.writeText(key);
+    });
+
+    document.getElementById('payButton').addEventListener('click', handlePayment);
+
+    // Load selected product from URL parameter
+    function loadSelectedProductFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productKey = urlParams.get('product');
+      if (productKey && plans[productKey]) {
+        selectedPlan = productKey;
+      }
+    }
+
+    loadSelectedProductFromURL();
+    renderPlans();
+    initializeStripe();
+  </script>
+</body>
+</html>

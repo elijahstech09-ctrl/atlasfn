@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products - Atlas FN</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f11;
+      --card: #15151a;
+      --text: #e6e7ea;
+      --muted: #9aa0aa;
+      --accent: #a855f7;
+      --accent-2: #d946ef;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      cursor: none !important;
+    }
+
+    * {
+      cursor: none !important;
+    }
+
+    body {
+      font-family: 'Sora', system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(168, 85, 247, 0.12), transparent),
+        radial-gradient(900px 500px at 90% 10%, rgba(217, 70, 239, 0.12), transparent),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: rgba(30, 31, 34, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 0.75rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 10100;
+      border-bottom: none;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 100%;
+      width: 100%;
+      margin: 0;
+      gap: 1rem;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .nav-links a {
+      padding: 0.4rem 0.8rem;
+      transition: all 0.2s;
+      position: relative;
+      color: #b5bac1;
+      font-size: 0.875rem;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: #dbdee1;
+      background: rgba(168, 85, 247, 0.12);
+    }
+
+    .redeem-btn {
+      background: linear-gradient(135deg, #a855f7, #d946ef);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+    }
+
+    .redeem-btn:hover {
+      background: linear-gradient(135deg, #8b35d4, #c026d3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+    }
+
+    .hamburger-menu {
+      position: relative;
+      top: 0;
+      left: 0;
+      z-index: 10110;
+      background: rgba(168, 85, 247, 0.1);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .hamburger-menu span {
+      width: 25px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: all 0.3s;
+    }
+
+    .hamburger-menu:hover span {
+      background: #fff;
+    }
+
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, #16161a 0%, #0a0a0c 100%);
+      border-bottom: 2px solid var(--accent);
+      z-index: 10500;
+      transform: translateY(-110%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      padding: 1.5rem 5% 1.75rem;
+    }
+
+    .sidebar-menu.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Custom Crosshair */
+    .crosshair {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      z-index: 13000;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease-out;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+      content: '';
+      position: absolute;
+      background: linear-gradient(90deg, #a855f7, #000);
+      box-shadow: 0 0 10px #a855f7;
+    }
+
+    .crosshair::before {
+      width: 2px;
+      height: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .crosshair::after {
+      height: 2px;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .crosshair-center {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #a855f7;
+      border: 2px solid #000;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px #a855f7, inset 0 0 5px #fff;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .product-box {
+      background: rgba(22, 22, 26, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .product-box:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 60px rgba(168, 85, 247, 0.2);
+      border-color: var(--accent);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(217, 70, 239, 0.15));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-image img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+
+    .product-logo {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(168, 85, 247, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+
+    .product-logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .product-info {
+      padding: 20px;
+    }
+
+    .product-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .product-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .product-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .product-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+    }
+
+    .product-btn:active {
+      transform: scale(0.98);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hex Grid Background Canvas -->
+  <canvas id="hexCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1;"></canvas>
+
+  <!-- Custom Crosshair -->
+  <div class="crosshair" id="crosshair">
+    <div class="crosshair-center"></div>
+  </div>
+
+  <!-- Hamburger Menu Button -->
+  <button class="hamburger-menu" id="hamburgerBtn" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Sidebar Menu -->
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="sidebar-content">
+      <div class="sidebar-section"><i class="fas fa-bolt"></i> Panels</div>
+      <div class="panel-action-grid">
+        <button class="panel-action-btn" type="button">Fly</button>
+        <button class="panel-action-btn" type="button">Godmode</button>
+        <button class="panel-action-btn" type="button">Invisible</button>
+        <button class="panel-action-btn" type="button">Set Health</button>
+        <button class="panel-action-btn" type="button">Set Jump</button>
+        <button class="panel-action-btn" type="button">Set Speed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <header>
+    <nav>
+      <div class="nav-brand"></div>
+      <div class="nav-links">
+        <a href="products.html">Products</a>
+        <a href="#">About</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://discord.gg/Y6jVxPVV" target="_blank" title="Join our Discord">
+          <i class="fab fa-discord"></i> Discord
+        </a>
+        <button onclick="openRedeemModal()" class="redeem-btn">
+          <i class="fas fa-ticket-alt"></i> Redeem Panel Key
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Redeem Modal -->
+  <div class="modern-modal" id="redeemModal" style="display: none; position: fixed; inset: 0; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 11000; padding: 2rem;">
+    <div style="background: rgba(22, 22, 26, 0.9); border: 1px solid var(--border); border-radius: 18px; padding: 24px; max-width: 450px; width: 90%;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;"><i class="fas fa-ticket-alt"></i> Redeem Panel Key</h2>
+        <button onclick="closeRedeemModal()" style="background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer;">×</button>
+      </div>
+      <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Enter your panel access key to unlock your permissions.</p>
+      <div style="margin-bottom: 15px;">
+        <label style="color: var(--muted); display: block; margin-bottom: 6px;">Access Key</label>
+        <input type="text" id="redeemKey" placeholder="ATL_XXXXX_XXXXX" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-family: monospace;">
+      </div>
+      <div id="redeemError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+      <button onclick="redeemPanelKey()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; margin-top: 1.5rem; cursor: pointer;">
+        <i class="fas fa-unlock"></i> Redeem Key
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="hero">
+      <h1>Featured Products</h1>
+      <p>Explore our premium offerings</p>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+      <!-- Products will be populated here -->
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Atlas FN. All rights reserved. Secure payments powered by Stripe.</p>
+  </footer>
+
+  <script>
+    const products = [
+      {
+        id: 1,
+        name: 'Atlas FN External',
+        desc: 'Premium external tool with advanced features',
+        price: 29.99,
+        image: 'atlas_logo.png',
+        logo: 'atlas_logo.png',
+        action: 'View Details'
+      }
+    ];
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = products.map(p => `
+        <div class="product-box" onclick="handleProductClick(${p.id})">
+          <div class="product-image">
+            <div class="product-logo">
+              <img src="${p.logo}" alt="Logo" onerror="this.style.display='none'">
+            </div>
+            <img src="${p.image}" alt="${p.name}" onerror="this.alt='${p.name}'">
+          </div>
+          <div class="product-info">
+            <div class="product-name">${p.name}</div>
+            <div class="product-desc">${p.desc}</div>
+            <div class="product-footer">
+              <div class="product-price">$${p.price.toFixed(2)}</div>
+              <button class="product-btn" onclick="event.stopPropagation(); goToPurchase();">${p.action}</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function handleProductClick(productId) {
+      goToPurchase();
+    }
+
+    function goToPurchase() {
+      window.location.href = 'purchase.html';
+    }
+
+    function openRedeemModal() {
+      const modal = document.getElementById('redeemModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRedeemModal() {
+      const modal = document.getElementById('redeemModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function redeemPanelKey() {
+      const key = document.getElementById('redeemKey').value.trim();
+      const errorEl = document.getElementById('redeemError');
+      
+      const stored = localStorage.getItem('ownerPanelKeys');
+      const keys = stored ? JSON.parse(stored) : {};
+      
+      if (keys[key] && keys[key].active) {
+        closeRedeemModal();
+        localStorage.setItem('userActiveKey', JSON.stringify({
+          key: key,
+          panel: keys[key].name,
+          type: keys[key].type,
+          redeemedAt: new Date().toLocaleString()
+        }));
+        showRedeemSuccess(keys[key].name);
+      } else {
+        errorEl.textContent = 'Invalid or inactive key';
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function showRedeemSuccess(panelName) {
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position: fixed; inset: 0; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 11001; padding: 2rem; display: flex;';
+      modal.innerHTML = `
+        <div style="background: rgba(22, 22, 26, 0.9); border: 1px solid var(--border); border-radius: 18px; padding: 24px; max-width: 450px; width: 90%;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;"><i class="fas fa-check-circle"></i> Redeemed Successfully</h2>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer;">×</button>
+          </div>
+          <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Your key has been redeemed. Access granted to <span style="color: var(--accent);">${panelName}</span>.</p>
+          <button onclick="window.open('panel.html', '_blank'); this.parentElement.parentElement.remove();" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-external-link-alt"></i> Open Panel
+          </button>
+          <button onclick="this.parentElement.parentElement.remove()" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 8px; font-size: 0.85rem; margin-top: 0.5rem; cursor: pointer;">
+            Close
+          </button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebarMenu');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+
+    // Hex grid animation
+    const canvas = document.getElementById('hexCanvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const hexRadius = 15;
+      const hexagons = [];
+      const cols = Math.ceil(canvas.width / (hexRadius * 1.5)) + 1;
+      const rows = Math.ceil(canvas.height / (hexRadius * 1.5)) + 1;
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          hexagons.push({
+            x: i * hexRadius * 1.5,
+            y: j * hexRadius * 1.5
+          });
+        }
+      }
+
+      let hexMouseX = 0, hexMouseY = 0;
+
+      function drawHexagon(x, y, radius, opacity) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 3) * i;
+          const hx = x + radius * Math.cos(angle);
+          const hy = y + radius * Math.sin(angle);
+          if (i === 0) ctx.moveTo(hx, hy);
+          else ctx.lineTo(hx, hy);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = `rgba(168, 85, 247, ${opacity})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        hexagons.forEach(hex => {
+          const dx = hexMouseX - hex.x;
+          const dy = hexMouseY - hex.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const maxDistance = 200;
+
+          let opacity = 0.1;
+          if (distance < maxDistance) {
+            opacity = 1.0 * (1 - distance / maxDistance);
+          }
+
+          drawHexagon(hex.x, hex.y, hexRadius, opacity);
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      document.addEventListener('mousemove', (e) => {
+        hexMouseX = e.clientX;
+        hexMouseY = e.clientY;
+      });
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      animate();
+    }
+
+    // Crosshair
+    const crosshair = document.getElementById('crosshair');
+    if (crosshair) {
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        crosshair.style.left = mouseX + 'px';
+        crosshair.style.top = mouseY + 'px';
+      });
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
