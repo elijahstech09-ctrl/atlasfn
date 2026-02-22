@@ -5036,9 +5036,71 @@ For support, contact: support@atlasfn.com
       document.body.style.overflow = 'hidden';
     }
 
-    // ===== OWNER ACCESS SYSTEM =====
+    // ===== OWNER ACCESS SYSTEM WITH SECURITY =====
     const ownerPassword = 'Atl4s$Pr0_Ow9r#2026!SecureK3y';
     const ownerKey = 'ATL_OWNER_MASTER_2026_ATLAS';
+    
+    // Security settings
+    const SECURITY = {
+      maxAttempts: 5,
+      lockoutMinutes: 15,
+      salt: 'AtlasFN_Security_Salt_2026'
+    };
+    
+    // Hash password using SHA-256
+    async function hashPassword(password) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password + SECURITY.salt);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    
+    // Check if owner panel access is locked
+    function isAccessLocked() {
+      const lockData = JSON.parse(localStorage.getItem('ownerAccessLock') || '{}');
+      if (!lockData.lockedUntil) return false;
+      
+      const now = new Date().getTime();
+      if (now < lockData.lockedUntil) {
+        return true;
+      } else {
+        localStorage.removeItem('ownerAccessLock');
+        return false;
+      }
+    }
+    
+    // Record failed attempt
+    function recordFailedAttempt() {
+      const attempts = JSON.parse(localStorage.getItem('ownerAccessAttempts') || '{"count":0,"timestamp":0}');
+      const now = new Date().getTime();
+      
+      // Reset if last attempt was > 15 minutes ago
+      if (now - attempts.timestamp > (SECURITY.lockoutMinutes * 60 * 1000)) {
+        attempts.count = 1;
+      } else {
+        attempts.count++;
+      }
+      
+      attempts.timestamp = now;
+      
+      // Lock account if max attempts reached
+      if (attempts.count >= SECURITY.maxAttempts) {
+        const lockUntil = now + (SECURITY.lockoutMinutes * 60 * 1000);
+        localStorage.setItem('ownerAccessLock', JSON.stringify({ lockedUntil }));
+        localStorage.removeItem('ownerAccessAttempts');
+        return true; // Account is now locked
+      }
+      
+      localStorage.setItem('ownerAccessAttempts', JSON.stringify(attempts));
+      return false;
+    }
+    
+    // Clear attempts on successful login
+    function clearAccessAttempts() {
+      localStorage.removeItem('ownerAccessAttempts');
+    }
+    
     const panelKeys = {
       'ATL_DEV_PANEL_2026': {
         name: 'Developer Panel',
@@ -5150,16 +5212,45 @@ For support, contact: support@atlasfn.com
     });
 
     function verifyOwnerPassword() {
-      const input = document.getElementById('accessPassword').value;
       const errorEl = document.getElementById('accessError');
       
+      // Check if access is locked
+      if (isAccessLocked()) {
+        const lockData = JSON.parse(localStorage.getItem('ownerAccessLock'));
+        const minutesLeft = Math.ceil((lockData.lockedUntil - new Date().getTime()) / 60000);
+        errorEl.textContent = `❌ Account locked. Try again in ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}`;
+        errorEl.style.display = 'block';
+        return;
+      }
+      
+      const input = document.getElementById('accessPassword').value.trim();
+      
+      if (!input) {
+        errorEl.textContent = 'Please enter your password or key';
+        errorEl.style.display = 'block';
+        return;
+      }
+      
       if (input === ownerPassword || input === ownerKey) {
+        clearAccessAttempts();
+        console.log('✅ Owner access granted at', new Date().toLocaleString());
         closeAccessModal();
         loadOwnerPanel();
         openOwnerPanel();
       } else {
-        errorEl.textContent = 'Incorrect password or key';
+        const locked = recordFailedAttempt();
+        const attempts = JSON.parse(localStorage.getItem('ownerAccessAttempts') || '{"count":0}');
+        const attemptsLeft = SECURITY.maxAttempts - attempts.count;
+        
+        if (locked) {
+          errorEl.textContent = `❌ Too many failed attempts. Account locked for ${SECURITY.lockoutMinutes} minutes`;
+          errorEl.style.color = '#ff6b6b';
+        } else {
+          errorEl.textContent = `⚠️ Invalid credentials. ${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} remaining`;
+          errorEl.style.color = '#ff6b6b';
+        }
         errorEl.style.display = 'block';
+        console.warn('❌ Failed access attempt -', attempts.count, 'of', SECURITY.maxAttempts);
       }
     }
 
